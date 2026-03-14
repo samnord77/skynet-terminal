@@ -42,3 +42,4 @@ jspm_packages
 dist
 prebuild-src
 src/node_modules
+.tools

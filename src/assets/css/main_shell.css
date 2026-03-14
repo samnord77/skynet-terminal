@@ -42,6 +42,58 @@ section#main_shell > h3.title > p {
     width: 49.8%;
 }
 
+div#main_shell_toolbar {
+    width: 100%;
+    margin-top: 3.2vh;
+    margin-bottom: 0.8vh;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 1vh;
+}
+
+div#main_shell_statusline {
+    flex: 1 1 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6vh;
+}
+
+div#main_shell_statusline > span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.8vh;
+    padding: 0.35vh 0.8vh;
+    border: 0.16vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.45);
+    background: rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
+    font-size: 1.18vh;
+    letter-spacing: 0.12vh;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+div#main_shell_actions {
+    display: flex;
+    gap: 0.6vh;
+}
+
+div#main_shell_actions > button {
+    min-width: 12vh;
+    border: 0.16vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.6);
+    background: transparent;
+    color: rgb(var(--color_r), var(--color_g), var(--color_b));
+    font-family: var(--font_main);
+    font-size: 1.22vh;
+    font-weight: bold;
+    letter-spacing: 0.14vh;
+    padding: 0.6vh 1vh;
+    cursor: pointer;
+}
+
+div#main_shell_actions > button:hover {
+    background: rgba(var(--color_r), var(--color_g), var(--color_b), 0.2);
+}
+
 ul#main_shell_tabs {
     margin: 0;
     margin-top: -0.70vh;
@@ -211,4 +263,18 @@ div#main_shell_innercontainer pre#terminal4 {
 
 .xterm:not(.enable-mouse-events) {
     cursor: text;
+}
+
+@media screen and (max-width: 1200px) {
+    div#main_shell_toolbar {
+        flex-direction: column;
+    }
+
+    div#main_shell_actions {
+        width: 100%;
+    }
+
+    div#main_shell_actions > button {
+        flex: 1 1 0;
+    }
 }

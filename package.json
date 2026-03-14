@@ -1,8 +1,8 @@
 {
-  "name": "edex-ui",
-  "productName": "eDEX-UI",
+  "name": "skynet-terminal",
+  "productName": "Skynet Terminal",
   "version": "2.2.8",
-  "description": "A science fiction desktop running everywhere. Awesome.",
+  "description": "A cinematic sci-fi terminal and system console for Windows.",
   "keywords": [
     "desktop",
     "sci-fi",
@@ -23,6 +23,7 @@
     "build-linux": "./node_modules/.bin/electron-builder build -l --x64 --ia32 --arm64 --armv7l",
     "build-darwin": "./node_modules/.bin/electron-builder build -m",
     "build-windows": "node_modules\\.bin\\electron-builder build -w",
+    "dist-windows": "npm run prebuild-windows && npm run build-windows && npm run postbuild-windows",
     "postbuild-linux": "rm -R prebuild-src",
     "postbuild-darwin": "rm -R prebuild-src",
     "postbuild-windows": "rmdir /S /Q prebuild-src",
@@ -32,28 +33,28 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GitSquared/edex-ui.git"
+    "url": "git+https://github.com/samnord77/skynet-terminal.git"
   },
-  "author": "Gabriel 'Squared' SAILLARD <gabriel@saillard.dev> (https://gaby.dev)",
+  "author": "Bessam Nordine <bessamnordine@gmail.com>",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/GitSquared/edex-ui/issues"
+    "url": "https://github.com/samnord77/skynet-terminal/issues"
   },
-  "homepage": "https://github.com/GitSquared/edex-ui#readme",
+  "homepage": "https://github.com/samnord77/skynet-terminal#readme",
   "build": {
-    "appId": "com.edex.ui",
-    "productName": "eDEX-UI",
+    "appId": "com.samnord77.skynetterminal",
+    "productName": "Skynet Terminal",
     "publish": "github",
     "asar": true,
     "compression": "normal",
-    "copyright": "Copyright © 2017-2021 Gabriel 'Squared' SAILLARD <gabriel@saillard.dev> (https://gaby.dev)",
+    "copyright": "Copyright © 2026 Bessam Nordine",
     "directories": {
       "output": "dist",
       "app": "prebuild-src"
     },
     "forceCodeSigning": false,
     "npmRebuild": true,
-    "artifactName": "eDEX-UI-${os}-${arch}.${ext}",
+    "artifactName": "Skynet-Terminal-${os}-${arch}.${ext}",
     "linux": {
       "target": [
         "AppImage"
@@ -62,7 +63,7 @@
       "icon": "media/linuxIcons"
     },
     "appImage": {
-      "artifactName": "eDEX-UI-Linux-${arch}.AppImage"
+      "artifactName": "Skynet-Terminal-Linux-${arch}.AppImage"
     },
     "mac": {
       "target": [
@@ -77,7 +78,7 @@
       "icon": "media/icon.icns"
     },
     "dmg": {
-      "artifactName": "eDEX-UI-macOS-${arch}.dmg"
+      "artifactName": "Skynet-Terminal-macOS-${arch}.dmg"
     },
     "win": {
       "target": [
@@ -92,7 +93,7 @@
       "icon": "media/icon.ico"
     },
     "nsis": {
-      "artifactName": "eDEX-UI-Windows-${arch}.exe",
+      "artifactName": "Skynet-Terminal-Windows-${arch}.exe",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "deleteAppDataOnUninstall": true

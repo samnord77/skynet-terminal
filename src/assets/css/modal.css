@@ -249,3 +249,60 @@ details#shortcutsHelpAccordeon2 table td:nth-child(3) input[type="checkbox"] {
     max-height: 50vh;
     outline: none !important;
 }
+
+/* Skynet Ops Center */
+
+#skynetOpsCenter {
+    min-width: 54vw;
+    max-width: 70vw;
+}
+
+#skynetOpsCenter p {
+    margin-top: 0;
+    font-size: 1.8vh;
+    line-height: 1.45;
+}
+
+#skynetOpsCenter h5 {
+    margin: 1vh 0;
+    font-size: 1.8vh;
+    font-weight: bold;
+}
+
+#skynetOpsCenter .skynet_ops_grid,
+#skynetOpsCenter .skynet_theme_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18vh, 1fr));
+    gap: 1vh;
+}
+
+#skynetOpsCenter .skynet_card {
+    border: 0.15vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.55);
+    background: rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
+    padding: 1.2vh;
+}
+
+#skynetOpsCenter .skynet_card strong {
+    display: block;
+    margin-bottom: 0.6vh;
+    font-size: 1.55vh;
+}
+
+#skynetOpsCenter .skynet_card span {
+    display: block;
+    min-height: 3.2vh;
+    font-size: 1.3vh;
+    opacity: 0.82;
+}
+
+#skynetOpsCenter .skynet_card button {
+    width: 100%;
+    margin: 0.8vh 0 0;
+}
+
+@media screen and (max-width: 1200px) {
+    #skynetOpsCenter {
+        min-width: 80vw;
+        max-width: 84vw;
+    }
+}

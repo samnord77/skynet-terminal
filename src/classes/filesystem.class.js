@@ -102,6 +102,10 @@ class FilesystemDisplay {
                 // See #501
                 if (this._noTracking) return false;
 
+                if (typeof window.updateSkynetStatus === "function" && cwd) {
+                    window.updateSkynetStatus({cwd});
+                }
+
                 if (cwd && cwd !== this.cwd_path && window.currentTerm === num) {
                     this.cwd_path = cwd;
                     if (this._fsWatcher) {
@@ -406,27 +410,27 @@ class FilesystemDisplay {
                         break;
                     case "edex-theme":
                         icon = this.edexIcons.theme;
-                        type = "eDEX-UI theme";
+                        type = "Skynet Terminal theme";
                         break;
                     case "edex-kblayout":
                         icon = this.edexIcons.kblayout;
-                        type = "eDEX-UI keyboard layout";
+                        type = "Skynet Terminal keyboard layout";
                         break;
                     case "edex-settings":
                     case "edex-shortcuts":
                         icon = this.edexIcons.settings;
-                        type = "eDEX-UI config file";
+                        type = "Skynet Terminal config file";
                         break;
                     case "system":
                         icon = this.edexIcons.settings;
                         break;
                     case "edex-themesDir":
                         icon = this.edexIcons.themesDir;
-                        type = "eDEX-UI themes folder";
+                        type = "Skynet Terminal themes folder";
                         break;
                     case "edex-kblayoutsDir":
                         icon = this.edexIcons.kblayoutsDir;
-                        type = "eDEX-UI keyboards folder";
+                        type = "Skynet Terminal keyboards folder";
                         break;
                     default:
                         let iconName = this.fileIconsMatcher(e.name);

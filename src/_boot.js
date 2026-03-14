@@ -3,7 +3,7 @@ const {app, BrowserWindow, dialog, shell} = require("electron");
 
 process.on("uncaughtException", e => {
     signale.fatal(e);
-    dialog.showErrorBox("eDEX-UI crashed", e.message || "Cannot retrieve error message.");
+    dialog.showErrorBox("Skynet Terminal crashed", e.message || "Cannot retrieve error message.");
     if (tty) {
         tty.close();
     }
@@ -17,13 +17,13 @@ process.on("uncaughtException", e => {
     process.exit(1);
 });
 
-signale.start(`Starting eDEX-UI v${app.getVersion()}`);
+signale.start(`Starting Skynet Terminal v${app.getVersion()}`);
 signale.info(`With Node ${process.versions.node} and Electron ${process.versions.electron}`);
 signale.info(`Renderer is Chrome ${process.versions.chrome}`);
 
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {
-    signale.fatal("Error: Another instance of eDEX is already running. Cannot proceed.");
+    signale.fatal("Error: Another instance of Skynet Terminal is already running. Cannot proceed.");
     app.exit(1);
 }
 
@@ -107,6 +107,7 @@ if (!fs.existsSync(shortcutsFile)) {
         { type: "app", trigger: "Ctrl+X", action: "TAB_X", enabled: true },
         { type: "app", trigger: "Ctrl+Shift+S", action: "SETTINGS", enabled: true },
         { type: "app", trigger: "Ctrl+Shift+K", action: "SHORTCUTS", enabled: true },
+        { type: "app", trigger: "Ctrl+Shift+O", action: "COMMAND_CENTER", enabled: true },
         { type: "app", trigger: "Ctrl+Shift+F", action: "FUZZY_SEARCH", enabled: true },
         { type: "app", trigger: "Ctrl+Shift+L", action: "FS_LIST_VIEW", enabled: true },
         { type: "app", trigger: "Ctrl+Shift+H", action: "FS_DOTFILES", enabled: true },
@@ -178,7 +179,7 @@ function createWindow(settings) {
     let {x, y, width, height} = display.bounds;
     width++; height++;
     win = new BrowserWindow({
-        title: "eDEX-UI",
+        title: "Skynet Terminal",
         x,
         y,
         width,
@@ -236,7 +237,7 @@ app.on('ready', async () => {
     Object.assign(cleanEnv, {
         TERM: "xterm-256color",
         COLORTERM: "truecolor",
-        TERM_PROGRAM: "eDEX-UI",
+        TERM_PROGRAM: "Skynet Terminal",
         TERM_PROGRAM_VERSION: app.getVersion()
     }, settings.env);
 

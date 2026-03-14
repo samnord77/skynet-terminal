@@ -36,6 +36,7 @@ window.onerror = (msg, path, line, col, error) => {
 
 const path = require("path");
 const fs = require("fs");
+const os = require("os");
 const electron = require("electron");
 const remote = require("@electron/remote");
 const ipc = electron.ipcRenderer;
@@ -52,6 +53,182 @@ const lastWindowStateFile = path.join(settingsDir, "lastWindowState.json");
 window.settings = require(settingsFile);
 window.shortcuts = require(shortcutsFile);
 window.lastWindowState = require(lastWindowStateFile);
+window.appMeta = Object.freeze({
+    name: "Skynet Terminal",
+    shortName: "SKYNET",
+    repoUrl: "https://github.com/samnord77/skynet-terminal",
+    releaseApiPath: "/repos/samnord77/skynet-terminal/releases/latest"
+});
+
+window.ensureBuiltinShortcuts = () => {
+    const requiredShortcuts = [
+        { type: "app", trigger: "Ctrl+Shift+O", action: "COMMAND_CENTER", enabled: true }
+    ];
+    let changed = false;
+
+    requiredShortcuts.forEach(shortcut => {
+        if (!window.shortcuts.some(entry => entry.type === shortcut.type && entry.action === shortcut.action)) {
+            window.shortcuts.push(shortcut);
+            changed = true;
+        }
+    });
+
+    if (changed) {
+        fs.writeFileSync(shortcutsFile, JSON.stringify(window.shortcuts, "", 4));
+    }
+};
+
+window.ensureBuiltinShortcuts();
+
+window.skynetSession = {
+    host: os.hostname(),
+    platform: `${os.type()} ${os.release()}`,
+    theme: window.settings.theme,
+    cwd: window.settings.cwd || remote.app.getPath("home")
+};
+
+window.updateSkynetStatus = updates => {
+    Object.assign(window.skynetSession, updates);
+
+    const labels = {
+        host: `HOST ${window.skynetSession.host}`,
+        platform: `OS ${window.skynetSession.platform}`,
+        theme: `THEME ${window.skynetSession.theme}`,
+        cwd: `CWD ${window.skynetSession.cwd}`
+    };
+
+    Object.keys(labels).forEach(key => {
+        const element = document.getElementById(`skynet_status_${key}`);
+        if (element) {
+            element.textContent = labels[key];
+        }
+    });
+};
+
+window.getSkynetCommand = action => {
+    if (process.platform === "win32") {
+        switch(action) {
+            case "SYSTEM_SCAN":
+                return "Get-ComputerInfo | Select-Object CsName,WindowsProductName,WindowsVersion,OsArchitecture";
+            case "NETWORK_SCAN":
+                return "ipconfig /all";
+            case "LIST_FILES":
+                return "Get-ChildItem -Force";
+            case "SHOW_CWD":
+                return "Get-Location";
+            case "CLEAR_SCREEN":
+                return "cls";
+            default:
+                return "";
+        }
+    }
+
+    switch(action) {
+        case "SYSTEM_SCAN":
+            return "uname -a && whoami";
+        case "NETWORK_SCAN":
+            return "ip addr || ifconfig";
+        case "LIST_FILES":
+            return "ls -la";
+        case "SHOW_CWD":
+            return "pwd";
+        case "CLEAR_SCREEN":
+            return "clear";
+        default:
+            return "";
+    }
+};
+
+window.runSkynetCommand = action => {
+    const command = window.getSkynetCommand(action);
+    if (!command || !window.term || !window.term[window.currentTerm]) return;
+
+    window.term[window.currentTerm].writelr(command);
+    window.term[window.currentTerm].term.focus();
+};
+
+window.openCommandCenter = () => {
+    if (document.getElementById("skynetOpsCenter")) return;
+
+    const themes = fs.readdirSync(themesDir)
+        .filter(file => file.endsWith(".json"))
+        .map(file => file.replace(".json", ""))
+        .sort()
+        .slice(0, 8);
+
+    const quickActions = [
+        {
+            label: "System scan",
+            description: "Resume la machine et la version active.",
+            action: "SYSTEM_SCAN"
+        },
+        {
+            label: "Network scan",
+            description: "Affiche les interfaces et l'etat reseau.",
+            action: "NETWORK_SCAN"
+        },
+        {
+            label: "List files",
+            description: "Liste les fichiers du dossier courant.",
+            action: "LIST_FILES"
+        },
+        {
+            label: "Show cwd",
+            description: "Affiche le dossier courant du shell.",
+            action: "SHOW_CWD"
+        },
+        {
+            label: "Clear screen",
+            description: "Nettoie immediatement le terminal.",
+            action: "CLEAR_SCREEN"
+        },
+        {
+            label: "Open repository",
+            description: "Ouvre le depot GitHub Skynet Terminal.",
+            action: "REPO"
+        }
+    ];
+
+    const actionCards = quickActions.map(item => {
+        const clickHandler = item.action === "REPO"
+            ? `require('electron').shell.openExternal('${window.appMeta.repoUrl}')`
+            : `window.runSkynetCommand('${item.action}')`;
+
+        return `<div class="skynet_card">
+            <strong>${item.label}</strong>
+            <span>${item.description}</span>
+            <button onclick="${clickHandler}">Execute</button>
+        </div>`;
+    }).join("");
+
+    const themeCards = themes.map(theme => {
+        return `<div class="skynet_card">
+            <strong>${theme}</strong>
+            <span>Appliquer ce theme et recharger l'interface.</span>
+            <button onclick="window.themeChanger('${theme}')">Activer</button>
+        </div>`;
+    }).join("");
+
+    window.keyboard.detach();
+    new Modal({
+        type: "custom",
+        title: `Skynet Ops Center <i>(v${electron.remote.app.getVersion()})</i>`,
+        html: `<div id="skynetOpsCenter">
+                <p>Centre de commandes rapide pour lancer des diagnostics, retrouver le contexte du shell et changer de theme sans quitter l'interface.</p>
+                <h5>Quick Actions</h5>
+                <div class="skynet_ops_grid">${actionCards}</div>
+                <h5>Theme Switch</h5>
+                <div class="skynet_theme_grid">${themeCards}</div>
+            </div>`,
+        buttons: [
+            {label: "Settings", action: "window.openSettings()"},
+            {label: "Reload UI", action: "window.location.reload(true);"}
+        ]
+    }, () => {
+        window.keyboard.attach();
+        window.term[window.currentTerm].term.focus();
+    });
+};
 
 // Load CLI parameters
 if (remote.process.argv.includes("--nointro")) {
@@ -243,7 +420,7 @@ function displayLine() {
 
     switch(true) {
         case i === 2:
-            bootScreen.innerHTML += `eDEX-UI Kernel version ${electron.remote.app.getVersion()} boot at ${Date().toString()}; root:xnu-1699.22.73~1/RELEASE_X86_64`;
+            bootScreen.innerHTML += `Skynet Terminal Kernel version ${electron.remote.app.getVersion()} boot at ${Date().toString()}; root:xnu-1699.22.73~1/RELEASE_X86_64`;
         case i === 4:
             setTimeout(displayLine, 500);
             break;
@@ -288,7 +465,7 @@ async function displayTitleScreen() {
 
     document.body.setAttribute("class", "");
     bootScreen.setAttribute("class", "center");
-    bootScreen.innerHTML = "<h1>eDEX-UI</h1>";
+    bootScreen.innerHTML = "<h1>SKYNET TERMINAL</h1>";
     let title = document.querySelector("section > h1");
 
     await _delay(200);
@@ -458,6 +635,18 @@ async function initUI() {
     // Initialize the terminal
     let shellContainer = document.getElementById("main_shell");
     shellContainer.innerHTML += `
+        <div id="main_shell_toolbar">
+            <div id="main_shell_statusline">
+                <span id="skynet_status_host"></span>
+                <span id="skynet_status_platform"></span>
+                <span id="skynet_status_theme"></span>
+                <span id="skynet_status_cwd"></span>
+            </div>
+            <div id="main_shell_actions">
+                <button onclick="window.openCommandCenter()">OPS CENTER</button>
+                <button onclick="window.openSettings()">SETTINGS</button>
+            </div>
+        </div>
         <ul id="main_shell_tabs">
             <li id="shell_tab0" onclick="window.focusShellTab(0);" class="active"><p>MAIN SHELL</p></li>
             <li id="shell_tab1" onclick="window.focusShellTab(1);"><p>EMPTY</p></li>
@@ -487,7 +676,8 @@ async function initUI() {
     window.onmouseup = e => {
         if (window.keyboard.linkedToTerm) window.term[window.currentTerm].term.focus();
     };
-    window.term[0].term.writeln("\033[1m"+`Welcome to eDEX-UI v${electron.remote.app.getVersion()} - Electron v${process.versions.electron}`+"\033[0m");
+    window.term[0].term.writeln("\033[1m"+`Welcome to Skynet Terminal v${electron.remote.app.getVersion()} - Electron v${process.versions.electron}`+"\033[0m");
+    window.updateSkynetStatus({});
 
     await _delay(100);
 
@@ -802,7 +992,7 @@ window.openSettings = async () => {
             {label: "Open in External Editor", action:`electron.shell.openPath('${settingsFile}');electronWin.minimize();`},
             {label: "Save to Disk", action: "window.writeSettingsFile()"},
             {label: "Reload UI", action: "window.location.reload(true);"},
-            {label: "Restart eDEX", action: "electron.remote.app.relaunch();electron.remote.app.quit();"}
+            {label: "Restart Skynet", action: "electron.remote.app.relaunch();electron.remote.app.quit();"}
         ]
     }, () => {
         // Link the keyboard back to the terminal
@@ -881,6 +1071,7 @@ window.openShortcutsHelp = () => {
         "TAB_X": "Switch to terminal tab <strong>X</strong>, or create it if it hasn't been opened yet.",
         "SETTINGS": "Open the settings editor.",
         "SHORTCUTS": "List and edit available keyboard shortcuts.",
+        "COMMAND_CENTER": "Open the Skynet Ops Center with quick diagnostics and theme switching.",
         "FUZZY_SEARCH": "Search for entries in the current working directory.",
         "FS_LIST_VIEW": "Toggle between list and grid view in the file browser.",
         "FS_DOTFILES": "Toggle hidden files and directories in the file browser.",
@@ -1018,6 +1209,9 @@ window.useAppShortcut = action => {
             return true;
         case "SHORTCUTS":
             window.openShortcutsHelp();
+            return true;
+        case "COMMAND_CENTER":
+            window.openCommandCenter();
             return true;
         case "FUZZY_SEARCH":
             window.activeFuzzyFinder = new FuzzyFinder();
