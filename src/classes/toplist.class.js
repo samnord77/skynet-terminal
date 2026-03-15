@@ -6,7 +6,7 @@ class Toplist {
         this.parent = document.getElementById(parentId);
         this._element = document.createElement("div");
         this._element.setAttribute("id", "mod_toplist");
-        this._element.innerHTML = `<h1>TOP PROCESSES<i>PID | NAME | CPU | MEM</i></h1><br>
+        this._element.innerHTML = `<h1>PROCESSUS PRINCIPAUX<i>PID | NOM | CPU | MEM</i></h1><br>
         <table id="mod_toplist_table"></table>`;
         this._element.onclick = this.processList;
 
@@ -195,19 +195,19 @@ class Toplist {
         new Modal(
             {
                 type: "custom",
-                title: "Active Processes",
+                title: "Processus actifs",
                 html: `
 <table id=\"processContainer\">
     <thead>
         <tr>
             <td class="pid header">PID</td>
-            <td class="name header">Name</td>
-            <td class="user header">User</td>
+            <td class="name header">Nom</td>
+            <td class="user header">Utilisateur</td>
             <td class="cpu header">CPU</td>
-            <td class="mem header">Memory</td>
-            <td class="state header">State</td>
-            <td class="started header">Started</td>
-            <td class="runtime header">Runtime</td>
+            <td class="mem header">Memoire</td>
+            <td class="state header">Etat</td>
+            <td class="started header">Demarre</td>
+            <td class="runtime header">Duree</td>
         </tr>
     </thead>
     <tbody id=\"processList\">

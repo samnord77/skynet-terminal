@@ -1,11 +1,11 @@
 {
     "colors": {
-        "r": 170,
-        "g": 207,
-        "b": 209,
-        "black": "#000000",
-        "light_black": "#05080d",
-        "grey": "#262828"
+        "r": 92,
+        "g": 255,
+        "b": 238,
+        "black": "#01070c",
+        "light_black": "#061019",
+        "grey": "#0b2126"
     },
     "cssvars": {
         "font_main": "United Sans Medium",
@@ -14,16 +14,17 @@
     "terminal": {
         "fontFamily": "Fira Mono",
         "cursorStyle": "block",
-        "foreground": "#aacfd1",
-        "background": "#05080d",
-        "cursor": "#aacfd1",
-        "cursorAccent": "#aacfd1",
-        "selection": "rgba(170,207,209,0.3)"
+        "foreground": "#b9fffb",
+        "background": "#061019",
+        "cursor": "#5cffee",
+        "cursorAccent": "#cffff9",
+        "selection": "rgba(92,255,238,0.3)"
     },
     "globe": {
-        "base": "#000000",
-        "marker": "#aacfd1",
-        "pin": "#aacfd1",
-        "satellite": "#aacfd1"
-    }
+        "base": "#01070c",
+        "marker": "#5cffee",
+        "pin": "#cffff9",
+        "satellite": "#5cffee"
+    },
+    "injectCSS": "section#main_shell,section.mod_column,section#filesystem{box-shadow:0 0 2vh rgba(92,255,238,0.16),0 0 4.5vh rgba(92,255,238,0.08),inset 0 0 1.4vh rgba(92,255,238,0.08)}div#main_shell_statusline>span,div#main_shell_actions>button,#skynetOpsCenter .skynet_card,#skynetWorkspace .workspace_card,#skynetWorkspace .workspace_panel{box-shadow:0 0 1.8vh rgba(92,255,238,0.22),inset 0 0 1vh rgba(92,255,238,0.09)}.xterm .xterm-screen canvas{filter:drop-shadow(0 0 0.7vh rgba(92,255,238,0.24))}"
 }

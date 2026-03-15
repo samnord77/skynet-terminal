@@ -3,22 +3,61 @@ html, body {
     height: 100%;
     margin: 0vh;
     padding: 0vh;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 body {
+    position: relative;
+    isolation: isolate;
     user-select: none !important;
-    padding-top: 1.85vh;
+    padding-top: 1.2vh;
+    padding-bottom: 2vh;
     color: rgb(var(--color_r), var(--color_g), var(--color_b));
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     flex-wrap: wrap;
+    row-gap: 0.8vh;
     background: linear-gradient(90deg, var(--color_light_black) 1.85vh, transparent 1%) center, linear-gradient(var(--color_light_black) 1.85vh, transparent 1%) center, var(--color_grey);
     background-size: 2.04vh 2.04vh;
+    text-shadow: 0 0 0.6vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.18);
 }
 body.solidBackground {
     background: var(--color_light_black);
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: -10%;
+    background:
+        radial-gradient(circle at 16% 18%, rgba(var(--color_r), var(--color_g), var(--color_b), 0.24), transparent 22%),
+        radial-gradient(circle at 84% 12%, rgba(var(--color_r), var(--color_g), var(--color_b), 0.18), transparent 24%),
+        radial-gradient(circle at 50% 84%, rgba(var(--color_r), var(--color_g), var(--color_b), 0.14), transparent 28%);
+    filter: blur(3.6vh);
+    opacity: 0.9;
+    pointer-events: none;
+    z-index: 0;
+    animation: neonBloomPulse 18s ease-in-out infinite;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+        linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.06), transparent 38%, rgba(var(--color_r), var(--color_g), var(--color_b), 0.04) 100%),
+        repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 0.14vh, transparent 0.14vh, transparent 0.42vh);
+    mix-blend-mode: screen;
+    opacity: 0.65;
+    pointer-events: none;
+    z-index: 0;
+}
+
+body > * {
+    position: relative;
+    z-index: 1;
 }
 
 ::-webkit-scrollbar {
@@ -37,11 +76,16 @@ body.solidBackground {
 }
 
 section > h3.title:first-child {
-    position: fixed;
+    position: sticky;
+    top: 0;
     margin: 0vh;
     padding: 0vh 0.925vh;
     font-size: 1.02vh;
     border-bottom: 0.092vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.3);
+    background: rgba(3, 8, 12, 0.88);
+    backdrop-filter: blur(0.8vh);
+    text-shadow: 0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.35);
+    z-index: 6;
 }
 section > h3.title:first-child > p {
     display: inline-block;
@@ -67,4 +111,56 @@ section > h3.title:first-child::after {
     right: -1.2vh;
     bottom: -0.555vh;
     height: 0.46vh;
+}
+
+@keyframes neonBloomPulse {
+    0%, 100% {
+        transform: scale(1) translate3d(0, 0, 0);
+        opacity: 0.82;
+    }
+    50% {
+        transform: scale(1.05) translate3d(0, -0.6vh, 0);
+        opacity: 1;
+    }
+}
+
+#skynet_window_chrome {
+    position: fixed;
+    top: 0.9vh;
+    right: 1vh;
+    z-index: 999999;
+    display: flex;
+    gap: 0.5vh;
+    align-items: center;
+}
+
+#skynet_window_chrome > button {
+    min-width: 8.2vh;
+    padding: 0.55vh 1vh;
+    border: 0.16vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.55);
+    background: linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.18), rgba(var(--color_r), var(--color_g), var(--color_b), 0.04));
+    color: rgb(var(--color_r), var(--color_g), var(--color_b));
+    font-family: var(--font_main);
+    font-size: 1.08vh;
+    letter-spacing: 0.14vh;
+    cursor: pointer;
+    box-shadow:
+        0 0 1.2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.2),
+        inset 0 0 0.8vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
+    transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+#skynet_window_chrome > button:hover {
+    transform: translateY(-0.08vh);
+    box-shadow:
+        0 0 2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.3),
+        inset 0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.1);
+}
+
+#skynet_window_chrome > button.danger {
+    border-color: rgba(255, 84, 84, 0.72);
+    color: rgb(255, 146, 146);
+    box-shadow:
+        0 0 1.2vh rgba(255, 84, 84, 0.18),
+        inset 0 0 0.8vh rgba(255, 84, 84, 0.1);
 }

@@ -23,7 +23,7 @@ class Sysinfo {
                 <h2>JAN 1</h2>
             </div>
             <div>
-                <h1>UPTIME</h1>
+                <h1>ACTIVITE</h1>
                 <h2>0:0:0</h2>
             </div>
             <div>
@@ -31,7 +31,7 @@ class Sysinfo {
                 <h2>${os}</h2>
             </div>
             <div>
-                <h1>POWER</h1>
+                <h1>ALIM</h1>
                 <h2>00%</h2>
             </div>
         </div>`;
@@ -123,12 +123,12 @@ class Sysinfo {
                 if (bat.isCharging) {
                     indicator.innerHTML = "CHARGE";
                 } else if (bat.acConnected) {
-                    indicator.innerHTML = "WIRED";
+                    indicator.innerHTML = "SECTEUR";
                 } else {
                     indicator.innerHTML = bat.percent+"%";
                 }
             } else {
-                indicator.innerHTML = "ON";
+                indicator.innerHTML = "OK";
             }
         });
     }

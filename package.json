@@ -2,14 +2,18 @@
   "name": "skynet-terminal",
   "productName": "Skynet Terminal",
   "version": "2.2.8",
-  "description": "A cinematic sci-fi terminal and system console for Windows.",
+  "description": "A cinematic sci-fi terminal, Kali workspace and LM Studio control surface for Windows.",
   "keywords": [
     "desktop",
     "sci-fi",
     "gui",
     "portable",
     "tty",
-    "terminal"
+    "terminal",
+    "kali",
+    "wsl",
+    "lm-studio",
+    "workspace"
   ],
   "main": "src/_boot.js",
   "scripts": {
@@ -29,7 +33,9 @@
     "postbuild-windows": "rmdir /S /Q prebuild-src",
     "test": "rsync -a --info=progress2 src/ prebuild-src --exclude node_modules && node prebuild-minify.js && cd prebuild-src && npm install && snyk test && cd .. && rm -R prebuild-src",
     "init-file-icons": "git submodule update --init",
-    "update-file-icons": "git submodule foreach git pull origin master && node file-icons-generator.js"
+    "update-file-icons": "git submodule foreach git pull origin master && node file-icons-generator.js",
+    "workspace:test": "node tests/workspace.test.js",
+    "workspace:typecheck": "node_modules\\.bin\\tsc -p tsconfig.json --noEmit"
   },
   "repository": {
     "type": "git",
@@ -111,5 +117,8 @@
   },
   "optionalDependencies": {
     "cson-parser": "4.0.9"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
   }
 }

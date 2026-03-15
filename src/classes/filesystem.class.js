@@ -45,7 +45,7 @@ class FilesystemDisplay {
             </div>
             <div id="fs_space_bar">
                 <h1>EXIT DISPLAY</h1>
-                <h3>Calculating available space...</h3><progress value="100" max="100"></progress>
+                <h3>Calcul de l'espace disponible...</h3><progress value="100" max="100"></progress>
             </div>`;
         this.filesContainer = document.getElementById("fs_disp_container");
         this.space_bar = {
@@ -162,7 +162,7 @@ class FilesystemDisplay {
             this.filesContainer.setAttribute("class", "");
             this.filesContainer.innerHTML = "";
             if (this._noTracking) {
-                document.querySelector("section#filesystem > h3.title > p:first-of-type").innerText = "FILESYSTEM - TRACKING FAILED, RUNNING DETACHED FROM TTY";
+                document.querySelector("section#filesystem > h3.title > p:first-of-type").innerText = "SYSTEME DE FICHIERS - SUIVI IMPOSSIBLE, EXECUTION DETACHEE DU TTY";
             }
 
             if (process.platform === "win32" && dir.endsWith(":")) dir = dir+"\\";
@@ -305,7 +305,7 @@ class FilesystemDisplay {
                 this.filesContainer.setAttribute("class", "");
             }
             if (this._noTracking) {
-                document.querySelector("section#filesystem > h3.title > p:first-of-type").innerText = "FILESYSTEM - TRACKING FAILED, RUNNING DETACHED FROM TTY";
+                document.querySelector("section#filesystem > h3.title > p:first-of-type").innerText = "SYSTEME DE FICHIERS - SUIVI IMPOSSIBLE, EXECUTION DETACHEE DU TTY";
             }
 
             let filesDOM = ``;
@@ -505,11 +505,11 @@ class FilesystemDisplay {
 
         this.reCalculateDiskUsage = async path => {
             this.fsBlock = null;
-            this.space_bar.text.innerHTML = "Calculating available space...";
+            this.space_bar.text.innerHTML = "Calcul de l'espace disponible...";
             this.space_bar.bar.removeAttribute("value");
 
             window.si.fsSize().catch(() => {
-                this.space_bar.text.innerHTML = "Could not calculate mountpoint usage.";
+                this.space_bar.text.innerHTML = "Impossible de calculer l'utilisation du point de montage.";
                 this.space_bar.bar.value = 100;
             }).then(d => {
                 d.forEach(fsBlock => {
@@ -529,15 +529,15 @@ class FilesystemDisplay {
 
             // See #226
             if (!isNaN(fsBlock.use)) {
-                this.space_bar.text.innerHTML = `Mount <strong>${displayMount}</strong> used <strong>${Math.round(fsBlock.use)}%</strong>`;
+                this.space_bar.text.innerHTML = `Point de montage <strong>${displayMount}</strong> utilise a <strong>${Math.round(fsBlock.use)}%</strong>`;
                 this.space_bar.bar.value = Math.round(fsBlock.use);
             } else if (!isNaN((fsBlock.size / fsBlock.used) * 100)) {
                 let usage = Math.round((fsBlock.size / fsBlock.used) * 100);
 
-                this.space_bar.text.innerHTML = `Mount <strong>${displayMount}</strong> used <strong>${usage}%</strong>`;
+                this.space_bar.text.innerHTML = `Point de montage <strong>${displayMount}</strong> utilise a <strong>${usage}%</strong>`;
                 this.space_bar.bar.value = usage;
             } else {
-                this.space_bar.text.innerHTML = "Could not calculate mountpoint usage.";
+                this.space_bar.text.innerHTML = "Impossible de calculer l'utilisation du point de montage.";
                 this.space_bar.bar.value = 100;
             }
         };
@@ -582,7 +582,7 @@ class FilesystemDisplay {
                                     ${this.icons["backwards"].svg}
                                 </svg>
                             </button>
-                            <span>Page: <span class="page_num"/></span><span>/</span> <span class="page_count"></span></span>
+                            <span>Page : <span class="page_num"/></span><span>/</span> <span class="page_count"></span></span>
                             <button class="next_page">
                                 <svg viewBox="0 0 ${this.icons["forwards"].width} ${this.icons["forwards"].height}" fill="${this.iconcolor}">
                                     ${this.icons["forwards"].svg}
@@ -613,7 +613,7 @@ class FilesystemDisplay {
                             if (err) {
                                 new Modal({
                                     type: "info",
-                                    title: "Failed to load file: " + block.path,
+                                    title: "Echec du chargement du fichier : " + block.path,
                                     html: err
                                 });
                                 console.log(err);
@@ -625,7 +625,7 @@ class FilesystemDisplay {
                                     title: _escapeHtml(name),
                                     html: `<textarea id="fileEdit" rows="40" cols="150" spellcheck="false">${data}</textarea><p id="fedit-status"></p>`,
                                     buttons: [
-                                        {label:"Save to Disk",action:`window.writeFile('${block.path}')`}
+                                        {label:"Enregistrer sur le disque",action:`window.writeFile('${block.path}')`}
                                     ]
                                 }, () => {
                                     window.keyboard.attach();

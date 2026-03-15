@@ -2,11 +2,16 @@ section#filesystem {
     position: relative;
     top: -0.925vh;
     width: 43vw;
-    height: 30vh;
+    height: 22vh;
+    min-height: 16vh;
     margin-right: 0.5vw;
 
     opacity: 0;
     transition: opacity .5s cubic-bezier(0.4, 0, 1, 1);
+    background: linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.04), rgba(var(--color_r), var(--color_g), var(--color_b), 0.01));
+    box-shadow:
+        0 0 1.6vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.12),
+        inset 0 0 1.4vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.04);
 }
 
 section#filesystem > h3.title {
@@ -28,7 +33,7 @@ div#fs_disp_container {
     position: relative;
     left: .35vw;
     top: 1.5vh;
-    height: 25.5vh;
+    height: 17.5vh;
     width: 43vw;
     overflow: auto;
     display: grid;
@@ -50,10 +55,20 @@ div#fs_disp_container > * {
     cursor: pointer;
     opacity: 1;
     transition: opacity .2s linear;
+    border: 0.12vh solid transparent;
+    box-shadow: inset 0 0 0.8vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.04);
 }
 
 div#fs_disp_container > *.animationWait {
     opacity: 0 !important;
+}
+
+div#fs_disp_container > *:hover {
+    border-color: rgba(var(--color_r), var(--color_g), var(--color_b), 0.35);
+    background: linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.14), rgba(var(--color_r), var(--color_g), var(--color_b), 0.03));
+    box-shadow:
+        0 0 1.4vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.16),
+        inset 0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
 }
 
 div#fs_disp_container > *:active {
@@ -153,7 +168,20 @@ div#fs_disp_container.disks {
     align-items: center;
     justify-content: space-evenly;
     border: 0.4vh double rgba(var(--color_r), var(--color_g), var(--color_b), 0.8);
+    box-shadow:
+        0 0 1.8vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.18),
+        inset 0 0 1.2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
     flex-wrap: wrap;
+}
+
+@media screen and (max-height: 900px) {
+    section#filesystem {
+        height: 18vh;
+    }
+
+    div#fs_disp_container {
+        height: 13.8vh;
+    }
 }
 div#fs_disp_container.disks > * {
     width: auto;
@@ -201,6 +229,9 @@ div#fs_space_bar > h1 {
     font-weight: bold;
     font-size: 1.5vh;
     cursor: pointer;
+    box-shadow:
+        0 0 1.2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.14),
+        inset 0 0 0.8vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
 }
 
 div#fs_disp_container.disks+div#fs_space_bar > h1 {
@@ -260,6 +291,7 @@ div#fs_space_bar > progress::-webkit-progress-value {
     height: .7vh;
     position: relative;
     bottom: .7vh;
+    box-shadow: 0 0 1.4vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.28);
     transition: width .5s cubic-bezier(0.4, 0, 1, 1);
 }
 

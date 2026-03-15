@@ -4,6 +4,10 @@ div#mod_hardwareInspector {
     letter-spacing: 0.092vh;
     padding: 0.645vh 0vh;
     display: flex;
+    background: linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.05), rgba(var(--color_r), var(--color_g), var(--color_b), 0.015));
+    box-shadow:
+        0 0 1.2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08),
+        inset 0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.05);
 }
 
 div#mod_hardwareInspector::before {
@@ -36,6 +40,12 @@ div#mod_hardwareInspector_inner {
 
 div#mod_hardwareInspector_inner > div {
     text-align: left;
+    padding: 0.25vh 0.4vh;
+    border: 0.12vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.1);
+    background: rgba(var(--color_r), var(--color_g), var(--color_b), 0.03);
+    box-shadow:
+        0 0 0.8vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08),
+        inset 0 0 0.7vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.04);
 }
 
 div#mod_hardwareInspector_inner > div > * {

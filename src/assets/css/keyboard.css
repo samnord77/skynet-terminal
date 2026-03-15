@@ -5,6 +5,11 @@ section#keyboard {
     width: 55.5vw;
     position: relative;
     top: -0.925vh;
+    filter: drop-shadow(0 0 1.4vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.18));
+}
+
+section#keyboard.collapsed {
+    display: none;
 }
 
 section#keyboard[data-password-mode="true"] {
@@ -20,6 +25,7 @@ div.keyboard_row {
     flex-wrap: nowrap;
     margin: 0.46vh 0vh;
     height: 5.28vh;
+    position: relative;
 }
 
 section#keyboard.animation_state_2 > div.keyboard_row:nth-child(1) {
@@ -60,19 +66,40 @@ div.keyboard_key {
     min-width: 2.7vw;
     overflow: hidden;
     border-radius: 0.46vh;
-    background-color: rgba(var(--color_r), var(--color_g), var(--color_b), 0.0);
-    border: 0.18vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.0);
+    background:
+        linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.12), rgba(var(--color_r), var(--color_g), var(--color_b), 0.02));
+    border: 0.18vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.18);
     margin: 0vh 0.46vh;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     cursor: pointer;
+    box-shadow:
+        0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.14),
+        inset 0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
+    transition: transform 120ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+div.keyboard_key::before {
+    content: "";
+    position: absolute;
+    inset: 0.25vh;
+    border-radius: 0.28vh;
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), transparent 60%);
+    opacity: 0.85;
+    pointer-events: none;
 }
 
 section#keyboard:not([data-password-mode="true"]) div.keyboard_key:active, section#keyboard:not([data-password-mode="true"]) div.keyboard_key.active {
-    border: 0.18vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.0);
-    background-color: rgba(var(--color_r), var(--color_g), var(--color_b), 1);
+    border: 0.18vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.9);
+    background:
+        linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.9), rgba(var(--color_r), var(--color_g), var(--color_b), 0.62));
+    box-shadow:
+        0 0 1.8vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.36),
+        0 0 3vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.16),
+        inset 0 0 1.2vh rgba(255,255,255,0.12);
+    transform: translateY(-0.08vh) scale(1.03);
 }
 
 section#keyboard:not([data-password-mode="true"]) div.keyboard_key.blink {
@@ -83,9 +110,18 @@ section#keyboard:not([data-password-mode="true"]) div.keyboard_key.blink {
 }
 
 @keyframes blink {
-    0% {background-color: rgba(var(--color_r), var(--color_g), var(--color_b), 0.0);}
-    50% {background-color: rgba(var(--color_r), var(--color_g), var(--color_b), 1);}
-    100% {background-color: rgba(var(--color_r), var(--color_g), var(--color_b), 0.0);}
+    0% {
+        background: linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.08), rgba(var(--color_r), var(--color_g), var(--color_b), 0.01));
+        box-shadow: 0 0 0.6vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
+    }
+    50% {
+        background: linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.96), rgba(var(--color_r), var(--color_g), var(--color_b), 0.62));
+        box-shadow: 0 0 2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.36), 0 0 3.2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.16);
+    }
+    100% {
+        background: linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.08), rgba(var(--color_r), var(--color_g), var(--color_b), 0.01));
+        box-shadow: 0 0 0.6vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
+    }
 }
 
 div.keyboard_key > * {
@@ -149,18 +185,18 @@ div.keyboard_row:not(:nth-child(4)):not(:last-child) > .keyboard_key:last-child,
 }
 
 div.keyboard_key#keyboard_spacebar {
-    border: 0.19vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.5);
+    border: 0.19vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.55);
 }
 
 div.keyboard_row#row_1 > div.keyboard_enter {
-    border: 0.19vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.5);
+    border: 0.19vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.55);
     border-bottom-right-radius: 0vh;
     width: 9.72vh;
     min-width: 9.72vh;
 }
 
 div.keyboard_row#row_2 > div.keyboard_enter {
-    border: 0.19vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.5);
+    border: 0.19vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.55);
     border-top-left-radius: 0vh;
     border-top: 0.3vh solid var(--color_light_black);
     width: 7.78vh;
@@ -192,9 +228,18 @@ div.keyboard_row:last-child > div.keyboard_key:nth-last-child(-n+3) {
     bottom: 0.278vh;
 }
 
+@media screen and (max-height: 900px) {
+    section#keyboard {
+        transform: scale(0.88);
+        transform-origin: top center;
+        margin-top: -2vh;
+    }
+}
+
 section#keyboard[data-is-caps-lck-on="true"] div.keyboard_key[data-cmd="ESCAPED|-- CAPSLCK: ON"] {
     background-color: rgb(var(--color_r), var(--color_g), var(--color_b));
     color: var(--color_black);
+    box-shadow: 0 0 2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.4);
 }
 
 section#keyboard[data-is-shift-on="true"] > div.keyboard_row > div.keyboard_key > h2:not(:empty), section#keyboard[data-is-caps-lck-on="true"] > div.keyboard_row > div.keyboard_key > h2:not(:empty) {
@@ -225,6 +270,7 @@ section#keyboard[data-is-shift-on="true"] > div.keyboard_row:first-child > div.k
 section#keyboard[data-is-fn-on="true"] div.keyboard_key[data-cmd="ESCAPED|-- FN: ON"] {
     background-color: rgb(var(--color_r), var(--color_g), var(--color_b));
     color: var(--color_black);
+    box-shadow: 0 0 2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.4);
 }
 
 section#keyboard[data-is-fn-on="true"] > div.keyboard_row > div.keyboard_key > h4:not(:empty) {

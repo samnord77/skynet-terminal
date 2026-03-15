@@ -4,6 +4,10 @@ div#mod_conninfo {
     letter-spacing: 0.092vh;
     padding: 0.645vh 0vh;
     display: flex;
+    background: linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.05), rgba(var(--color_r), var(--color_g), var(--color_b), 0.015));
+    box-shadow:
+        0 0 1.2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08),
+        inset 0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.05);
 }
 
 div#mod_conninfo::before {
@@ -38,6 +42,7 @@ div#mod_conninfo h1 {
     margin: 0vh;
     margin-bottom: -1vh;
     width: 98%;
+    text-shadow: 0 0 0.8vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.26);
 }
 
 div#mod_conninfo h2 {
@@ -67,6 +72,10 @@ div#mod_conninfo canvas {
     border-bottom: 0.092vh dashed rgba(var(--color_r), var(--color_g), var(--color_b), 0.3);
     margin: 0.46vh 0vh;
     opacity: 1;
+    background: linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.04), transparent);
+    box-shadow:
+        0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.12),
+        inset 0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.04);
 }
 
 div#mod_conninfo canvas#mod_conninfo_canvas_top {
@@ -92,4 +101,5 @@ div#mod_conninfo.offline canvas {
 
 div#mod_conninfo.offline h3:last-child {
     opacity: 1;
+    text-shadow: 0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.3);
 }

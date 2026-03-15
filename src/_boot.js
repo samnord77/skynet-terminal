@@ -35,6 +35,7 @@ const ipc = electron.ipcMain;
 const path = require("path");
 const url = require("url");
 const fs = require("fs");
+const net = require("net");
 const which = require("which");
 const Terminal = require("./classes/terminal.class.js").Terminal;
 
@@ -42,7 +43,7 @@ ipc.on("log", (e, type, content) => {
     signale[type](content);
 });
 
-var win, tty, extraTtys;
+var win, tty, extraTtys, geoWin;
 const settingsFile = path.join(electron.app.getPath("userData"), "settings.json");
 const shortcutsFile = path.join(electron.app.getPath("userData"), "shortcuts.json");
 const lastWindowStateFile = path.join(electron.app.getPath("userData"), "lastWindowState.json");
@@ -73,9 +74,17 @@ try {
 // Create default settings file
 if (!fs.existsSync(settingsFile)) {
     fs.writeFileSync(settingsFile, JSON.stringify({
-        shell: (process.platform === "win32") ? "powershell.exe" : "bash",
-        shellArgs: '',
-        cwd: electron.app.getPath("userData"),
+        shell: (process.platform === "win32") ? "pwsh.exe" : "bash",
+        shellArgs: (process.platform === "win32") ? "-NoLogo -NoProfile" : '',
+        kaliDistro: "kali-linux",
+        aiProvider: "lmstudio",
+        lmStudioEndpoint: "http://127.0.0.1:1234/v1",
+        lmStudioModel: "",
+        openaiEndpoint: "https://api.openai.com/v1",
+        openaiModel: "gpt-5.2-chat-latest",
+        openaiApiKey: "",
+        workspaceTypingDelay: 28,
+        cwd: electron.app.getPath(process.platform === "win32" ? "home" : "userData"),
         keyboard: "en-US",
         theme: "tron",
         termFontSize: 15,
@@ -87,8 +96,8 @@ if (!fs.existsSync(settingsFile)) {
         port: 3000,
         nointro: false,
         nocursor: false,
-        forceFullscreen: true,
-        allowWindowed: false,
+        forceFullscreen: false,
+        allowWindowed: true,
         excludeThreadsFromToplist: true,
         hideDotfiles: false,
         fsListView: false,
@@ -108,6 +117,7 @@ if (!fs.existsSync(shortcutsFile)) {
         { type: "app", trigger: "Ctrl+Shift+S", action: "SETTINGS", enabled: true },
         { type: "app", trigger: "Ctrl+Shift+K", action: "SHORTCUTS", enabled: true },
         { type: "app", trigger: "Ctrl+Shift+O", action: "COMMAND_CENTER", enabled: true },
+        { type: "app", trigger: "Ctrl+Shift+W", action: "KALI_WORKSPACE", enabled: true },
         { type: "app", trigger: "Ctrl+Shift+F", action: "FUZZY_SEARCH", enabled: true },
         { type: "app", trigger: "Ctrl+Shift+L", action: "FS_LIST_VIEW", enabled: true },
         { type: "app", trigger: "Ctrl+Shift+H", action: "FS_DOTFILES", enabled: true },
@@ -221,18 +231,238 @@ function createWindow(settings) {
     signale.watch("Waiting for frontend connection...");
 }
 
+async function resolveShellPath(configuredShell) {
+    const preferred = [];
+    const normalizedConfiguredShell = String(configuredShell || "").toLowerCase();
+
+    if (process.platform === "win32") {
+        if (normalizedConfiguredShell.includes("powershell") || normalizedConfiguredShell.includes("pwsh")) {
+            preferred.push("pwsh.exe");
+        }
+        if (configuredShell) {
+            preferred.push(configuredShell);
+        }
+        preferred.push("powershell.exe", "cmd.exe");
+    } else {
+        if (configuredShell) {
+            preferred.push(configuredShell);
+        }
+        preferred.push("bash");
+    }
+
+    for (const candidate of preferred) {
+        try {
+            return await which(candidate);
+        } catch (error) {
+            // Try next shell candidate
+        }
+    }
+
+    throw new Error(`Unable to resolve a usable shell starting from "${configuredShell || "default"}".`);
+}
+
+function getDefaultShellArgs(shellPath, configuredArgs) {
+    if (Array.isArray(configuredArgs)) {
+        return configuredArgs;
+    }
+
+    const rawArgs = String(configuredArgs || "").trim();
+    if (rawArgs.length > 0) {
+        return rawArgs.match(/(?:[^\s"]+|"[^"]*")+/g).map(entry => entry.replace(/^"(.*)"$/, "$1"));
+    }
+
+    if (process.platform !== "win32") {
+        return ["--login"];
+    }
+
+    const lowerShell = String(shellPath || "").toLowerCase();
+    if (lowerShell.endsWith("pwsh.exe") || lowerShell.endsWith("powershell.exe")) {
+        return ["-NoLogo", "-NoProfile"];
+    }
+
+    return [];
+}
+
+function checkPortAvailability(port) {
+    return new Promise(resolve => {
+        const server = net.createServer();
+
+        server.once("error", () => {
+            resolve(false);
+        });
+
+        server.once("listening", () => {
+            server.close(() => resolve(true));
+        });
+
+        server.listen(port);
+    });
+}
+
+async function resolveAvailablePort(preferredPort, excludedPorts = new Set()) {
+    let port = Number(preferredPort) || 3000;
+
+    while (excludedPorts.has(port) || !(await checkPortAvailability(port))) {
+        port++;
+    }
+
+    return port;
+}
+
+async function resolveTerminalPorts(basePort) {
+    const usedPorts = new Set();
+    const mainPort = await resolveAvailablePort(basePort, usedPorts);
+    usedPorts.add(mainPort);
+
+    const extraPorts = [];
+    let nextCandidate = mainPort + 2;
+    for (let i = 0; i < 4; i++) {
+        const port = await resolveAvailablePort(nextCandidate, usedPorts);
+        usedPorts.add(port);
+        extraPorts.push(port);
+        nextCandidate = port + 1;
+    }
+
+    return {
+        mainPort,
+        extraPorts
+    };
+}
+
+function createTerminalWithFallback(opts, label) {
+    let port = Number(opts.port) || 3000;
+    let attempts = 0;
+    let lastError = null;
+
+    while (attempts < 25) {
+        try {
+            return {
+                term: new Terminal(Object.assign({}, opts, { port })),
+                port
+            };
+        } catch (error) {
+            lastError = error;
+            if (error && error.code === "EADDRINUSE") {
+                signale.warn(`${label} port ${port} is unavailable. Retrying on ${port + 1}.`);
+                port++;
+                attempts++;
+                continue;
+            }
+            throw error;
+        }
+    }
+
+    throw lastError || new Error(`Unable to create ${label} terminal.`);
+}
+
+function createGeoWindow(payload = {}) {
+    if (!payload.ip || !Number.isFinite(Number(payload.latitude)) || !Number.isFinite(Number(payload.longitude))) {
+        return false;
+    }
+
+    const query = new URLSearchParams({
+        ip: payload.ip,
+        lat: payload.latitude.toString(),
+        lon: payload.longitude.toString(),
+        city: payload.city || "",
+        country: payload.country || "",
+        region: payload.region || "",
+        source: payload.source || "network"
+    }).toString();
+
+    const geoUrl = url.format({
+        pathname: path.join(__dirname, "geo-map.html"),
+        protocol: "file:",
+        slashes: true
+    }) + `?${query}`;
+
+    if (geoWin && !geoWin.isDestroyed()) {
+        geoWin.loadURL(geoUrl);
+        geoWin.show();
+        geoWin.focus();
+        return true;
+    }
+
+    geoWin = new BrowserWindow({
+        title: "Skynet Geo Map",
+        width: 1040,
+        height: 720,
+        minWidth: 860,
+        minHeight: 560,
+        show: false,
+        autoHideMenuBar: true,
+        backgroundColor: "#05080d",
+        parent: win || null,
+        webPreferences: {
+            devTools: true,
+            contextIsolation: false,
+            backgroundThrottling: false,
+            webSecurity: true,
+            nodeIntegration: true,
+            nodeIntegrationInSubFrames: false,
+            allowRunningInsecureContent: false
+        }
+    });
+
+    geoWin.on("closed", () => {
+        geoWin = null;
+    });
+
+    geoWin.loadURL(geoUrl);
+    geoWin.once("ready-to-show", () => {
+        if (geoWin) geoWin.show();
+    });
+
+    return true;
+}
+
 app.on('ready', async () => {
     signale.pending(`Loading settings file...`);
     let settings = require(settingsFile);
+    let settingsChanged = false;
+
+    if (process.platform === "win32") {
+        if (settings.allowWindowed !== true) {
+            settings.allowWindowed = true;
+            settingsChanged = true;
+        }
+        if (settings.forceFullscreen !== false) {
+            settings.forceFullscreen = false;
+            settingsChanged = true;
+        }
+        if (!settings.cwd || settings.cwd === electron.app.getPath("userData")) {
+            settings.cwd = electron.app.getPath("home");
+            settingsChanged = true;
+        }
+    }
+
     signale.pending(`Resolving shell path...`);
-    settings.shell = await which(settings.shell).catch(e => { throw(e) });
+    settings.shell = await resolveShellPath(settings.shell).catch(e => { throw(e) });
+    const shellArgs = getDefaultShellArgs(settings.shell, settings.shellArgs);
+    if (Array.isArray(shellArgs) && shellArgs.join(" ") !== String(settings.shellArgs || "").trim()) {
+        settings.shellArgs = shellArgs.join(" ");
+        settingsChanged = true;
+    }
     signale.info(`Shell found at ${settings.shell}`);
     signale.success(`Settings loaded!`);
 
+    if (!require("fs").existsSync(settings.cwd)) {
+        settings.cwd = electron.app.getPath("home");
+        settingsChanged = true;
+    }
     if (!require("fs").existsSync(settings.cwd)) throw new Error("Configured cwd path does not exist.");
 
-    // See #366
-    let cleanEnv = await require("shell-env")(settings.shell).catch(e => { throw e; });
+    if (settingsChanged) {
+        fs.writeFileSync(settingsFile, JSON.stringify(settings, "", 4));
+    }
+
+    let cleanEnv;
+    if (process.platform === "win32") {
+        cleanEnv = Object.assign({}, process.env);
+    } else {
+        // See #366
+        cleanEnv = await require("shell-env")(settings.shell).catch(e => { throw e; });
+    }
 
     Object.assign(cleanEnv, {
         TERM: "xterm-256color",
@@ -241,15 +471,28 @@ app.on('ready', async () => {
         TERM_PROGRAM_VERSION: app.getVersion()
     }, settings.env);
 
-    signale.pending(`Creating new terminal process on port ${settings.port || '3000'}`);
-    tty = new Terminal({
+    const configuredPort = Number(settings.port) || 3000;
+    const { mainPort, extraPorts } = await resolveTerminalPorts(configuredPort);
+    if (mainPort !== configuredPort) {
+        signale.warn(`Configured port ${configuredPort} is unavailable. Using ${mainPort} instead.`);
+        settings.port = mainPort;
+        fs.writeFileSync(settingsFile, JSON.stringify(settings, "", 4));
+    }
+
+    signale.pending(`Creating new terminal process on port ${mainPort}`);
+    const mainTerminal = createTerminalWithFallback({
         role: "server",
         shell: settings.shell,
-        params: settings.shellArgs || '',
+        params: shellArgs,
         cwd: settings.cwd,
         env: cleanEnv,
-        port: settings.port || 3000
-    });
+        port: mainPort
+    }, "main");
+    tty = mainTerminal.term;
+    if (mainTerminal.port !== settings.port) {
+        settings.port = mainTerminal.port;
+        fs.writeFileSync(settingsFile, JSON.stringify(settings, "", 4));
+    }
     signale.success(`Terminal back-end initialized!`);
     tty.onclosed = (code, signal) => {
         tty.ondisconnected = () => {};
@@ -276,19 +519,18 @@ app.on('ready', async () => {
 
     // Support for more terminals, used for creating tabs (currently limited to 4 extra terms)
     extraTtys = {};
-    let basePort = settings.port || 3000;
-    basePort = Number(basePort) + 2;
-
-    for (let i = 0; i < 4; i++) {
-        extraTtys[basePort+i] = null;
-    }
+    extraPorts.forEach(port => {
+        extraTtys[port] = null;
+    });
 
     ipc.on("ttyspawn", (e, arg) => {
         let port = null;
+        let reservedKey = null;
         Object.keys(extraTtys).forEach(key => {
             if (extraTtys[key] === null && port === null) {
                 extraTtys[key] = {};
                 port = key;
+                reservedKey = key;
             }
         });
 
@@ -297,14 +539,22 @@ app.on('ready', async () => {
             e.sender.send("ttyspawn-reply", "ERROR: max number of ttys reached");
         } else {
             signale.pending(`Creating new TTY process on port ${port}`);
-            let term = new Terminal({
+            const spawnedTerminal = createTerminalWithFallback({
                 role: "server",
                 shell: settings.shell,
-                params: settings.shellArgs || '',
+                params: shellArgs,
                 cwd: tty.tty._cwd || settings.cwd,
                 env: cleanEnv,
                 port: port
-            });
+            }, `tty ${port}`);
+            let term = spawnedTerminal.term;
+            port = spawnedTerminal.port;
+            if (reservedKey !== null && String(reservedKey) !== String(port)) {
+                extraTtys[reservedKey] = null;
+            }
+            if (typeof extraTtys[port] === "undefined") {
+                extraTtys[port] = null;
+            }
             signale.success(`New terminal back-end initialized at ${port}`);
             term.onclosed = (code, signal) => {
                 term.ondisconnected = () => {};
@@ -345,6 +595,9 @@ app.on('ready', async () => {
     ipc.on("setKbOverride", (e, arg) => {
         kbOverride = arg;
     });
+    ipc.on("openGeoWindow", (e, payload) => {
+        createGeoWindow(payload || {});
+    });
 });
 
 app.on('web-contents-created', (e, contents) => {
@@ -366,11 +619,18 @@ app.on('window-all-closed', () => {
 });
 
 app.on('before-quit', () => {
-    tty.close();
-    Object.keys(extraTtys).forEach(key => {
-        if (extraTtys[key] !== null) {
-            extraTtys[key].close();
-        }
-    });
+    if (tty) {
+        tty.close();
+    }
+    if (extraTtys) {
+        Object.keys(extraTtys).forEach(key => {
+            if (extraTtys[key] !== null) {
+                extraTtys[key].close();
+            }
+        });
+    }
+    if (geoWin && !geoWin.isDestroyed()) {
+        geoWin.close();
+    }
     signale.complete("Shutting down...");
 });

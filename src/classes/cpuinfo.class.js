@@ -24,24 +24,24 @@ class Cpuinfo {
 
             let innercontainer = document.createElement("div");
             innercontainer.setAttribute("id", "mod_cpuinfo_innercontainer");
-            innercontainer.innerHTML = `<h1>CPU USAGE<i>${cpuName}</i></h1>
+            innercontainer.innerHTML = `<h1>UTILISATION CPU<i>${cpuName}</i></h1>
                 <div>
                     <h1># <em>1</em> - <em>${divide}</em><br>
-                    <i id="mod_cpuinfo_usagecounter0">Avg. --%</i></h1>
+                    <i id="mod_cpuinfo_usagecounter0">Moy. --%</i></h1>
                     <canvas id="mod_cpuinfo_canvas_0" height="60"></canvas>
                 </div>
                 <div>
                     <h1># <em>${divide+1}</em> - <em>${data.cores}</em><br>
-                    <i id="mod_cpuinfo_usagecounter1">Avg. --%</i></h1>
+                    <i id="mod_cpuinfo_usagecounter1">Moy. --%</i></h1>
                     <canvas id="mod_cpuinfo_canvas_1" height="60"></canvas>
                 </div>
                 <div>
                     <div>
-                        <h1>${(process.platform === "win32") ? "CORES" : "TEMP"}<br>
+                        <h1>${(process.platform === "win32") ? "COEURS" : "TEMP"}<br>
                         <i id="mod_cpuinfo_temp">${(process.platform === "win32") ? data.cores : "--°C"}</i></h1>
                     </div>
                     <div>
-                        <h1>SPD<br>
+                        <h1>VIT<br>
                         <i id="mod_cpuinfo_speed_min">--GHz</i></h1>
                     </div>
                     <div>
@@ -49,7 +49,7 @@ class Cpuinfo {
                         <i id="mod_cpuinfo_speed_max">--GHz</i></h1>
                     </div>
                     <div>
-                        <h1>TASKS<br>
+                        <h1>TACHES<br>
                         <i id="mod_cpuinfo_tasks">---</i></h1>
                     </div>
                 </div>`;

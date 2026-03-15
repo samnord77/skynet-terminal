@@ -18,7 +18,22 @@
   <br><br><br>
 </p>
 
-eDEX-UI is a fullscreen, cross-platform terminal emulator and system monitor that looks and feels like a sci-fi computer interface.
+`Skynet Terminal` is a sci-fi terminal workspace for Windows that now layers `WSL2` + `Kali Linux` integration and dual AI support (`LM Studio` + `OpenAI`) on top of the original eDEX-style shell UI.
+
+## Kali Workspace
+
+- Embedded multi-tab terminal with a dedicated `Kali Workspace` panel.
+- Visual auto-typing into the active terminal tab before execution.
+- `WSL2` helpers to open a Kali shell or run one-shot `bash -lc` commands.
+- Selectable AI provider: local `LM Studio` or official `OpenAI`.
+- Local chat panel, plan generation, command explanations and session summaries through the active AI provider.
+- Neutral tool and workflow registries for environment readiness, host inventory, network baseline and service status.
+
+See [docs/kali-workspace.md](docs/kali-workspace.md) for the bridge architecture and the new `src/core` and `src/modules` layout.
+
+---
+
+eDEX-UI is the historical base of this project: a fullscreen, cross-platform terminal emulator and system monitor that looks and feels like a sci-fi computer interface.
 
 ---
 

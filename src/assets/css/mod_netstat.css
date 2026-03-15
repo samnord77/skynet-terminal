@@ -6,6 +6,10 @@ div#mod_netstat {
     padding: 0vh;
     padding-top: 0.645vh;
     display: flex;
+    background: linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.05), rgba(var(--color_r), var(--color_g), var(--color_b), 0.015));
+    box-shadow:
+        0 0 1.2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08),
+        inset 0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.05);
 }
 
 div#mod_netstat::before {
@@ -32,6 +36,7 @@ div#mod_netstat_inner > h1:first-child {
     margin: 0vh;
     width: 98%;
     padding-left: 2%;
+    text-shadow: 0 0 0.8vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.26);
 }
 
 div#mod_netstat_inner > h1:first-child > i {
@@ -61,6 +66,11 @@ div#mod_netstat_innercontainer div {
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-around;
+    border: 0.12vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.12);
+    background: rgba(var(--color_r), var(--color_g), var(--color_b), 0.04);
+    box-shadow:
+        0 0 0.8vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08),
+        inset 0 0 0.8vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.04);
 }
 
 div#mod_netstat_innercontainer div:nth-child(2) {
@@ -74,4 +84,15 @@ div#mod_netstat_innercontainer h1 {
 
 div#mod_netstat_innercontainer h2 {
     margin: 0vh;
+    text-shadow: 0 0 0.6vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.14);
+}
+
+div#mod_netstat_innercontainer h2.clickable_geo {
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: rgba(var(--color_r), var(--color_g), var(--color_b), 0.4);
+}
+
+div#mod_netstat_innercontainer h2.clickable_geo:hover {
+    text-shadow: 0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.28);
 }

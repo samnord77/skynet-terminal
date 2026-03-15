@@ -6,7 +6,7 @@ class RAMwatcher {
         this.parent = document.getElementById(parentId);
         let modExtContainer = document.createElement("div");
         let ramwatcherDOM = `<div id="mod_ramwatcher_inner">
-                <h1>MEMORY<i id="mod_ramwatcher_info"></i></h1>
+                <h1>MEMOIRE<i id="mod_ramwatcher_info"></i></h1>
                 <div id="mod_ramwatcher_pointmap">`;
 
         for (var i = 0; i < 440; i++) {
@@ -65,7 +65,7 @@ class RAMwatcher {
             // Update info text
             let totalGiB = Math.round((data.total/1073742000)*10)/10; // 1073742000 bytes = 1 Gibibyte (GiB), the *10 is to round to .1 decimal
             let usedGiB = Math.round((data.active/1073742000)*10)/10;
-            document.getElementById("mod_ramwatcher_info").innerText = `USING ${usedGiB} OUT OF ${totalGiB} GiB`;
+            document.getElementById("mod_ramwatcher_info").innerText = `UTILISE ${usedGiB} SUR ${totalGiB} GiB`;
 
             // Update swap indicator
             let usedSwap = Math.round((100*data.swapused)/data.swaptotal);

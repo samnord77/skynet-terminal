@@ -8,16 +8,16 @@ class HardwareInspector {
         this._element.setAttribute("id", "mod_hardwareInspector");
         this._element.innerHTML = `<div id="mod_hardwareInspector_inner">
             <div>
-                <h1>MANUFACTURER</h1>
-                <h2 id="mod_hardwareInspector_manufacturer" >NONE</h2>
+                <h1>FABRICANT</h1>
+                <h2 id="mod_hardwareInspector_manufacturer" >AUCUN</h2>
             </div>
             <div>
-                <h1>MODEL</h1>
-                <h2 id="mod_hardwareInspector_model" >NONE</h2>
+                <h1>MODELE</h1>
+                <h2 id="mod_hardwareInspector_model" >AUCUN</h2>
             </div>
             <div>
                 <h1>CHASSIS</h1>
-                <h2 id="mod_hardwareInspector_chassis" >NONE</h2>
+                <h2 id="mod_hardwareInspector_chassis" >AUCUN</h2>
             </div>
         </div>`;
 

@@ -8,6 +8,10 @@ div#mod_sysinfo {
     font-size: 1.111vh;
     font-family: var(--font_main_light);
     letter-spacing: 0.092vh;
+    background: linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.05), rgba(var(--color_r), var(--color_g), var(--color_b), 0.015));
+    box-shadow:
+        0 0 1.2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08),
+        inset 0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.05);
 }
 
 div#mod_sysinfo::before {
@@ -36,6 +40,7 @@ div#mod_sysinfo div {
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-around;
+    border-right: 0.12vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
 }
 
 div#mod_sysinfo h1 {
@@ -45,4 +50,5 @@ div#mod_sysinfo h1 {
 
 div#mod_sysinfo h2 {
     margin: 0vh;
+    text-shadow: 0 0 0.6vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.14);
 }

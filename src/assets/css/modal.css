@@ -280,6 +280,9 @@ details#shortcutsHelpAccordeon2 table td:nth-child(3) input[type="checkbox"] {
     border: 0.15vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.55);
     background: rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
     padding: 1.2vh;
+    box-shadow:
+        0 0 1.4vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.14),
+        inset 0 0 0.8vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
 }
 
 #skynetOpsCenter .skynet_card strong {
@@ -304,5 +307,350 @@ details#shortcutsHelpAccordeon2 table td:nth-child(3) input[type="checkbox"] {
     #skynetOpsCenter {
         min-width: 80vw;
         max-width: 84vw;
+    }
+}
+
+/* Kali Workspace */
+
+#skynetWorkspace {
+    min-width: 60vw;
+    max-width: 74vw;
+}
+
+#skynetWorkspace .workspace_intro {
+    margin-top: 0;
+    font-size: 1.7vh;
+    line-height: 1.45;
+}
+
+#skynetWorkspace .workspace_status,
+#skynetWorkspace .workspace_grid,
+#skynetWorkspace .workspace_tools,
+#skynetWorkspace .workspace_steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18vh, 1fr));
+    gap: 1vh;
+}
+
+#skynetWorkspace .workspace_section {
+    margin-top: 1.4vh;
+}
+
+#skynetWorkspace .workspace_card,
+#skynetWorkspace .workspace_panel {
+    border: 0.15vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.55);
+    background: rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
+    padding: 1.2vh;
+    box-shadow:
+        0 0 1.6vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.16),
+        inset 0 0 0.9vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
+}
+
+#skynetWorkspace .workspace_card strong,
+#skynetWorkspace .workspace_panel strong {
+    display: block;
+    margin-bottom: 0.6vh;
+    font-size: 1.5vh;
+}
+
+#skynetWorkspace .workspace_card span,
+#skynetWorkspace .workspace_panel span,
+#skynetWorkspace .workspace_statuschip span {
+    display: block;
+    font-size: 1.25vh;
+    opacity: 0.82;
+}
+
+#skynetWorkspace .workspace_statuschip {
+    border: 0.15vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.45);
+    padding: 1vh;
+    background: rgba(var(--color_black), 0.28);
+    box-shadow:
+        0 0 1.4vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.14),
+        inset 0 0 0.8vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.06);
+}
+
+#skynetWorkspace textarea,
+#skynetWorkspace input {
+    width: 100%;
+    margin: 0.8vh 0 0;
+}
+
+#skynetWorkspace .workspace_actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8vh;
+    margin-top: 0.8vh;
+}
+
+#skynetWorkspace .workspace_actions button,
+#skynetWorkspace .workspace_card button,
+#skynetWorkspace .workspace_panel button {
+    flex: 1 1 14vh;
+}
+
+#skynetWorkspace .workspace_log {
+    margin-top: 0.8vh;
+    white-space: pre-wrap;
+    max-height: 18vh;
+    overflow: auto;
+    font-size: 1.25vh;
+}
+
+#skynetWorkspace .workspace_actions button[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+#skynetWorkspace .workspace_chip {
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+#skynetWorkspace .workspace_chat_shell {
+    padding: 0;
+    overflow: hidden;
+}
+
+#skynetWorkspace .workspace_chat_header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.2vh;
+    align-items: flex-start;
+    padding: 1.4vh 1.4vh 0;
+}
+
+#skynetWorkspace .workspace_chat_header > div:first-child > span {
+    display: block;
+    margin-top: 0.35vh;
+    font-size: 1.15vh;
+    opacity: 0.74;
+}
+
+#skynetWorkspace .workspace_chat_badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6vh;
+    justify-content: flex-end;
+}
+
+#skynetWorkspace .workspace_chat_badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.45vh 0.8vh;
+    border: 0.12vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.34);
+    background: rgba(var(--color_black), 0.26);
+    font-size: 1.08vh;
+    letter-spacing: 0.08vh;
+    text-transform: uppercase;
+}
+
+#skynetWorkspace .workspace_chat_log {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1vh;
+    max-height: 40vh;
+    overflow: auto;
+    margin-top: 1vh;
+    padding: 0 1.4vh 0.8vh;
+}
+
+#skynetWorkspace .workspace_chat_empty {
+    padding: 2vh 1.6vh;
+    border: 0.15vh dashed rgba(var(--color_r), var(--color_g), var(--color_b), 0.26);
+    background: linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.04), rgba(var(--color_black), 0.22));
+}
+
+#skynetWorkspace .workspace_chat_empty h3 {
+    margin: 0.8vh 0 0.8vh;
+    font-size: 2vh;
+}
+
+#skynetWorkspace .workspace_chat_empty p {
+    margin: 0;
+    font-size: 1.28vh;
+    line-height: 1.55;
+    opacity: 0.88;
+}
+
+#skynetWorkspace .workspace_chat_empty_badge {
+    display: inline-flex;
+    padding: 0.45vh 0.8vh;
+    border: 0.12vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.3);
+    font-size: 1.08vh;
+    letter-spacing: 0.12vh;
+    text-transform: uppercase;
+    background: rgba(var(--color_black), 0.26);
+}
+
+#skynetWorkspace .workspace_chat_quickprompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7vh;
+    padding: 0 1.4vh 1.1vh;
+}
+
+#skynetWorkspace .workspace_chat_message {
+    display: flex;
+    gap: 0.9vh;
+    align-items: flex-start;
+}
+
+#skynetWorkspace .workspace_chat_message.user {
+    flex-direction: row-reverse;
+}
+
+#skynetWorkspace .workspace_chat_message.pending {
+    opacity: 0.92;
+}
+
+#skynetWorkspace .workspace_chat_avatar {
+    flex: 0 0 3.4vh;
+    width: 3.4vh;
+    height: 3.4vh;
+    display: grid;
+    place-items: center;
+    border: 0.12vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.34);
+    background: rgba(var(--color_black), 0.34);
+    font-size: 1.1vh;
+    letter-spacing: 0.12vh;
+    text-transform: uppercase;
+    box-shadow: 0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.12);
+}
+
+#skynetWorkspace .workspace_chat_bubble {
+    flex: 1 1 auto;
+    max-width: min(92%, 78ch);
+    border: 0.15vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.22);
+    padding: 1.1vh 1.2vh;
+    background: rgba(var(--color_black), 0.28);
+    box-shadow: inset 0 0 0.9vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.04);
+}
+
+#skynetWorkspace .workspace_chat_message.user .workspace_chat_bubble {
+    background: linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.12), rgba(var(--color_black), 0.24));
+}
+
+#skynetWorkspace .workspace_chat_message.assistant .workspace_chat_bubble {
+    background: linear-gradient(180deg, rgba(var(--color_black), 0.22), rgba(var(--color_r), var(--color_g), var(--color_b), 0.08));
+}
+
+#skynetWorkspace .workspace_chat_message_head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1vh;
+    margin-bottom: 0.7vh;
+    align-items: baseline;
+}
+
+#skynetWorkspace .workspace_chat_message_head span {
+    font-size: 1.05vh;
+    opacity: 0.68;
+}
+
+#skynetWorkspace .workspace_chat_message_body {
+    font-size: 1.28vh;
+    line-height: 1.55;
+    white-space: normal;
+}
+
+#skynetWorkspace .workspace_chat_message_body pre.workspace_chat_code {
+    margin: 0.9vh 0 0;
+    padding: 1vh;
+    background: rgba(var(--color_black), 0.42);
+    border: 0.12vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.18);
+    overflow: auto;
+    white-space: pre-wrap;
+}
+
+#skynetWorkspace .workspace_chat_message_body code.workspace_chat_inline,
+#skynetWorkspace .workspace_chat_message_body pre.workspace_chat_code code {
+    font-family: "Fira Code", "Consolas", monospace;
+    font-size: 1.16vh;
+}
+
+#skynetWorkspace .workspace_chat_message_actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7vh;
+    margin-top: 1vh;
+}
+
+#skynetWorkspace .workspace_chat_message_actions button {
+    flex: 0 1 auto;
+    min-width: 11vh;
+}
+
+#skynetWorkspace .workspace_chat_typing {
+    display: inline-flex;
+    gap: 0.45vh;
+    padding: 0.2vh 0 0.1vh;
+}
+
+#skynetWorkspace .workspace_chat_typing span {
+    width: 0.8vh;
+    height: 0.8vh;
+    border-radius: 50%;
+    background: rgba(var(--color_r), var(--color_g), var(--color_b), 0.82);
+    box-shadow: 0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.28);
+    animation: workspace-chat-pulse 1.05s infinite ease-in-out;
+}
+
+#skynetWorkspace .workspace_chat_typing span:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+#skynetWorkspace .workspace_chat_typing span:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+#skynetWorkspace .workspace_chat_composer {
+    border-top: 0.12vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.18);
+    background: rgba(var(--color_black), 0.2);
+    padding: 1vh 1.4vh 1.4vh;
+}
+
+#skynetWorkspace .workspace_chat_composer textarea {
+    margin-top: 0;
+    min-height: 12vh;
+}
+
+#skynetWorkspace .workspace_chat_toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1vh;
+    margin-top: 0.9vh;
+}
+
+@keyframes workspace-chat-pulse {
+    0%, 80%, 100% {
+        transform: translateY(0);
+        opacity: 0.45;
+    }
+    40% {
+        transform: translateY(-0.2vh);
+        opacity: 1;
+    }
+}
+
+#skynetWorkspace .workspace_muted {
+    opacity: 0.72;
+}
+
+@media screen and (max-width: 1200px) {
+    #skynetWorkspace {
+        min-width: 84vw;
+        max-width: 86vw;
+    }
+
+    #skynetWorkspace .workspace_chat_header,
+    #skynetWorkspace .workspace_chat_toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #skynetWorkspace .workspace_chat_bubble {
+        max-width: 100%;
     }
 }

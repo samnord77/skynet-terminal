@@ -6,11 +6,11 @@ class Netstat {
         this.parent = document.getElementById(parentId);
         this.parent.innerHTML += `<div id="mod_netstat">
             <div id="mod_netstat_inner">
-                <h1>NETWORK STATUS<i id="mod_netstat_iname"></i></h1>
+                <h1>ETAT RESEAU<i id="mod_netstat_iname"></i></h1>
                 <div id="mod_netstat_innercontainer">
                     <div>
-                        <h1>STATE</h1>
-                        <h2>UNKNOWN</h2>
+                        <h1>ETAT</h1>
+                        <h2>INCONNU</h2>
                     </div>
                     <div>
                         <h1>IPv4</h1>
@@ -23,6 +23,15 @@ class Netstat {
                 </div>
             </div>
         </div>`;
+
+        this.ipLabel = document.querySelector("#mod_netstat_innercontainer > div:nth-child(2) > h2");
+        this.ipLabel.title = "Cliquer pour ouvrir la fenetre de geo-carte";
+        this.ipLabel.addEventListener("click", () => {
+            let payload = this.getGeoPayload();
+            if (payload && typeof window.openGeoMapWindow === "function") {
+                window.openGeoMapWindow(payload);
+            }
+        });
 
         this.offline = false;
         this.lastconn = {finished: false}; // Prevent geoip lookup attempt until maxminddb is loaded
@@ -84,10 +93,10 @@ class Netstat {
                     } else {
                         // No external connection!
                         this.iface = null;
-                        document.getElementById("mod_netstat_iname").innerText = "Interface: (offline)";
+                        document.getElementById("mod_netstat_iname").innerText = "Interface : (hors ligne)";
 
                         this.offline = true;
-                        document.querySelector("#mod_netstat_innercontainer > div:first-child > h2").innerHTML = "OFFLINE";
+                        document.querySelector("#mod_netstat_innercontainer > div:first-child > h2").innerHTML = "HORS LIGNE";
                         document.querySelector("#mod_netstat_innercontainer > div:nth-child(2) > h2").innerHTML = "--.--.--.--";
                         document.querySelector("#mod_netstat_innercontainer > div:nth-child(3) > h2").innerHTML = "--ms";
                         break;
@@ -113,13 +122,18 @@ class Netstat {
                         res.on("end", () => {
                             try {
                                 let data = JSON.parse(rawData);
+                                let lookup = this.geoLookup.get(data.ip) || {};
                                 this.ipinfo = {
                                     ip: data.ip,
-                                    geo: this.geoLookup.get(data.ip).location
+                                    geo: lookup.location || null,
+                                    city: (lookup.city && lookup.city.names && lookup.city.names.en) || "",
+                                    country: (lookup.country && lookup.country.names && lookup.country.names.en) || (lookup.country && lookup.country.iso_code) || "",
+                                    region: (lookup.subdivisions && lookup.subdivisions[0] && lookup.subdivisions[0].names && lookup.subdivisions[0].names.en) || ""
                                 };
 
                                 let ip = this.ipinfo.ip;
                                 document.querySelector("#mod_netstat_innercontainer > div:nth-child(2) > h2").innerHTML = window._escapeHtml(ip);
+                                this.ipLabel.classList.toggle("clickable_geo", Boolean(this.getGeoPayload()));
 
                                 this.runsBeforeGeoIPUpdate = 10;
                             } catch(e) {
@@ -143,15 +157,31 @@ class Netstat {
 
                 this.offline = offline;
                 if (offline) {
-                    document.querySelector("#mod_netstat_innercontainer > div:first-child > h2").innerHTML = "OFFLINE";
+                    document.querySelector("#mod_netstat_innercontainer > div:first-child > h2").innerHTML = "HORS LIGNE";
                     document.querySelector("#mod_netstat_innercontainer > div:nth-child(2) > h2").innerHTML = "--.--.--.--";
                     document.querySelector("#mod_netstat_innercontainer > div:nth-child(3) > h2").innerHTML = "--ms";
+                    this.ipLabel.classList.remove("clickable_geo");
                 } else {
-                    document.querySelector("#mod_netstat_innercontainer > div:first-child > h2").innerHTML = "ONLINE";
+                    document.querySelector("#mod_netstat_innercontainer > div:first-child > h2").innerHTML = "EN LIGNE";
                     document.querySelector("#mod_netstat_innercontainer > div:nth-child(3) > h2").innerHTML = Math.round(p)+"ms";
                 }
             }
         });
+    }
+    getGeoPayload() {
+        if (!this.ipinfo || !this.ipinfo.geo || !this.ipinfo.geo.latitude || !this.ipinfo.geo.longitude) {
+            return null;
+        }
+
+        return {
+            ip: this.ipinfo.ip || "",
+            latitude: Number(this.ipinfo.geo.latitude),
+            longitude: Number(this.ipinfo.geo.longitude),
+            city: this.ipinfo.city || "",
+            country: this.ipinfo.country || "",
+            region: this.ipinfo.region || "",
+            source: "network-status"
+        };
     }
     ping(target, port, local) {
         return new Promise((resolve, reject) => {

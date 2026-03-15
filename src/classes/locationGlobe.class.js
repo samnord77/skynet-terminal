@@ -12,12 +12,22 @@ class LocationGlobe {
         this.parent = document.getElementById(parentId);
         this.parent.innerHTML += `<div id="mod_globe">
             <div id="mod_globe_innercontainer">
-                <h1>WORLD VIEW<i>GLOBAL NETWORK MAP</i></h1>
-                <h2>ENDPOINT LAT/LON<i class="mod_globe_headerInfo">0.0000, 0.0000</i></h2>
+                <h1>VUE MONDE<i>CARTE RESEAU GLOBALE</i></h1>
+                <h2>LAT/LON DU POINT<i class="mod_globe_headerInfo">0.0000, 0.0000</i></h2>
                 <div id="mod_globe_canvas_placeholder"></div>
-                <h3>OFFLINE</h3>
+                <h3>HORS LIGNE</h3>
             </div>
         </div>`;
+
+        this.parent.querySelector("#mod_globe").title = "Cliquer pour ouvrir la fenetre de geo-carte";
+        this.parent.querySelector("#mod_globe").addEventListener("click", () => {
+            if (window.mods && window.mods.netstat && typeof window.mods.netstat.getGeoPayload === "function") {
+                let payload = window.mods.netstat.getGeoPayload();
+                if (payload && typeof window.openGeoMapWindow === "function") {
+                    window.openGeoMapWindow(payload);
+                }
+            }
+        });
 
         this.lastgeo = {};
         this.conns = [];
@@ -172,7 +182,7 @@ class LocationGlobe {
     updateLoc() {
         if (window.mods.netstat.offline) {
             document.querySelector("div#mod_globe").setAttribute("class", "offline");
-            document.querySelector("i.mod_globe_headerInfo").innerText = "(OFFLINE)";
+            document.querySelector("i.mod_globe_headerInfo").innerText = "(HORS LIGNE)";
 
             this.removePins();
             this.removeMarkers();
@@ -185,7 +195,7 @@ class LocationGlobe {
             this.updateConOnlineConnection().then(() => {
                 document.querySelector("div#mod_globe").setAttribute("class", "");
             }).catch(() => {
-                document.querySelector("i.mod_globe_headerInfo").innerText = "UNKNOWN";
+                document.querySelector("i.mod_globe_headerInfo").innerText = "INCONNU";
             })
         }
     }

@@ -357,6 +357,69 @@ class Keyboard {
             });
         });
     }
+    findKeyNodeByInput(input) {
+        if (input === "\r" || input === "\n" || input === "Enter") {
+            return Array.from(this.container.querySelectorAll("div.keyboard_key.keyboard_enter"));
+        }
+
+        if (input === "Tab") {
+            return Array.from(this.container.querySelectorAll("div.keyboard_key")).find(key => key.dataset.cmd === "\t") || null;
+        }
+
+        if (input === " ") {
+            return document.getElementById("keyboard_spacebar");
+        }
+
+        let found = null;
+        this.container.querySelectorAll("div.keyboard_key").forEach(key => {
+            if (found) return;
+            if (key.dataset.cmd === input || key.dataset.shift_cmd === input || key.dataset.alt_cmd === input || key.dataset.ctrl_cmd === input) {
+                found = key;
+            }
+        });
+
+        return found;
+    }
+    async animateInput(input, opts = {}) {
+        let key = this.findKeyNodeByInput(input);
+        let holdMs = (typeof opts.holdMs === "number") ? opts.holdMs : 40;
+
+        if (key === null) {
+            await new Promise(resolve => setTimeout(resolve, holdMs));
+            return false;
+        }
+
+        let keys = Array.isArray(key) ? key : [key];
+        keys.forEach(node => {
+            if (node.className.includes("keyboard_enter")) {
+                node.setAttribute("class", "keyboard_key active keyboard_enter");
+            } else {
+                node.setAttribute("class", "keyboard_key active");
+            }
+        });
+
+        await new Promise(resolve => setTimeout(resolve, holdMs));
+
+        keys.forEach(node => {
+            if (node.className.includes("keyboard_enter")) {
+                node.setAttribute("class", "keyboard_key blink keyboard_enter");
+            } else {
+                node.setAttribute("class", "keyboard_key blink");
+            }
+        });
+
+        await new Promise(resolve => setTimeout(resolve, 80));
+
+        keys.forEach(node => {
+            if (node.className.includes("keyboard_enter")) {
+                node.setAttribute("class", "keyboard_key keyboard_enter");
+            } else {
+                node.setAttribute("class", "keyboard_key");
+            }
+        });
+
+        return true;
+    }
     pressKey(key) {
         let cmd = key.dataset.cmd || "";
 

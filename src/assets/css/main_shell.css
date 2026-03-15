@@ -1,6 +1,7 @@
 section#main_shell {
     width: 65%;
-    height: 60.3%;
+    height: min(54vh, 60.3%);
+    min-height: 38vh;
     padding: 0.74vh;
     /* border: 0.18vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.5); */
     /* border-radius: 0.278vh; */
@@ -14,6 +15,13 @@ section#main_shell {
     align-items: flex-start;
     justify-content: flex-start;
     overflow: hidden;
+    background:
+        linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.08), rgba(var(--color_r), var(--color_g), var(--color_b), 0.02)),
+        rgba(3, 8, 12, 0.86);
+    box-shadow:
+        0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.22),
+        0 0 4vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.12),
+        inset 0 0 2.2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.06);
 
     transition: width .5s cubic-bezier(0.85, 0.5, 0.85, 0.5), height .5s cubic-bezier(0.85, 0.5, 0.85, 0.5);
 }
@@ -32,9 +40,9 @@ h1#main_shell_greeting > em {
 }
 
 section#main_shell > h3.title {
-    top: 0.74vh;
-    left: 16.5vw;
-    width: 66%;
+    top: 0;
+    left: auto;
+    width: 100%;
     transition: opacity .5s cubic-bezier(0.4, 0, 1, 1) .5s;
 }
 
@@ -70,17 +78,22 @@ div#main_shell_statusline > span {
     letter-spacing: 0.12vh;
     text-transform: uppercase;
     white-space: nowrap;
+    box-shadow:
+        0 0 1.4vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.16),
+        inset 0 0 0.9vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
 }
 
 div#main_shell_actions {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.6vh;
+    justify-content: flex-end;
 }
 
 div#main_shell_actions > button {
     min-width: 12vh;
     border: 0.16vh solid rgba(var(--color_r), var(--color_g), var(--color_b), 0.6);
-    background: transparent;
+    background: linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.14), rgba(var(--color_r), var(--color_g), var(--color_b), 0.03));
     color: rgb(var(--color_r), var(--color_g), var(--color_b));
     font-family: var(--font_main);
     font-size: 1.22vh;
@@ -88,10 +101,18 @@ div#main_shell_actions > button {
     letter-spacing: 0.14vh;
     padding: 0.6vh 1vh;
     cursor: pointer;
+    box-shadow:
+        0 0 1.4vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.18),
+        inset 0 0 1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.08);
+    transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
 }
 
 div#main_shell_actions > button:hover {
-    background: rgba(var(--color_r), var(--color_g), var(--color_b), 0.2);
+    background: linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.28), rgba(var(--color_r), var(--color_g), var(--color_b), 0.08));
+    box-shadow:
+        0 0 2.2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.34),
+        inset 0 0 1.1vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.12);
+    transform: translateY(-0.1vh);
 }
 
 ul#main_shell_tabs {
@@ -123,8 +144,9 @@ ul#main_shell_tabs > li {
     text-align: center;
     box-sizing: border-box;
 
-    background: var(--color_light_black);
+    background: linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.08), rgba(var(--color_r), var(--color_g), var(--color_b), 0.02)) var(--color_light_black);
     transform: skewX(35deg);
+    box-shadow: inset 0 0 1.2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.05);
 }
 ul#main_shell_tabs > li > p {
     margin: 0;
@@ -140,6 +162,9 @@ ul#main_shell_tabs > li.active {
     font-weight: bold;
     transform: skewX(35deg) scale(1.2);
     z-index: -1;
+    box-shadow:
+        0 0 2.2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.34),
+        0 0 4vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.12);
 }
 
 div#main_shell_innercontainer, div#main_shell_innercontainer pre {
@@ -234,6 +259,10 @@ div#main_shell_innercontainer pre#terminal4 {
     overflow-y: hidden;
 }
 
+.xterm .xterm-screen canvas {
+    filter: drop-shadow(0 0 0.55vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.14));
+}
+
 .xterm .xterm-screen {
     position: relative;
 }
@@ -272,9 +301,17 @@ div#main_shell_innercontainer pre#terminal4 {
 
     div#main_shell_actions {
         width: 100%;
+        justify-content: stretch;
     }
 
     div#main_shell_actions > button {
         flex: 1 1 0;
+    }
+}
+
+@media screen and (max-height: 900px) {
+    section#main_shell {
+        height: 48vh;
+        min-height: 34vh;
     }
 }

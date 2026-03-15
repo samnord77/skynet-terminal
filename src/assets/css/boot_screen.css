@@ -14,6 +14,10 @@ section#boot_screen {
     display: flex;
     align-items: flex-end;
     justify-content: flex-start;
+    background:
+        radial-gradient(circle at 50% 45%, rgba(var(--color_r), var(--color_g), var(--color_b), 0.14), transparent 36%),
+        linear-gradient(180deg, rgba(var(--color_r), var(--color_g), var(--color_b), 0.05), transparent 35%, rgba(var(--color_r), var(--color_g), var(--color_b), 0.04) 100%);
+    text-shadow: 0 0 0.7vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.22);
 }
 
 section#boot_screen.center {
@@ -30,6 +34,9 @@ section#boot_screen h1 {
     padding-right: 2vh;
     padding-left: 1.5vh;
     background-color: transparent;
+    box-shadow:
+        0 0 2vh rgba(var(--color_r), var(--color_g), var(--color_b), 0.28),
+        inset 0 -0.5vh 0 rgba(var(--color_r), var(--color_g), var(--color_b), 0.12);
 
     opacity: 0;
     animation-name: fadeInTitle;

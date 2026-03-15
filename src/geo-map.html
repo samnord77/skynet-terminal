@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="Content-Security-Policy" content="default-src file: 'unsafe-inline'; frame-src https://www.openstreetmap.org; img-src file: data: https://www.openstreetmap.org;">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Carte Geo Skynet</title>
+        <style>
+            :root {
+                --accent-cyan: #5cfff3;
+                --accent-pink: #ff5cff;
+                --accent-green: #84ff8b;
+                --bg-dark: #070813;
+                --panel-dark: rgba(12, 14, 30, 0.94);
+                --line: rgba(92, 255, 243, 0.34);
+                --line-soft: rgba(255, 92, 255, 0.18);
+                --text-main: #ddffff;
+                --text-dim: rgba(221, 255, 255, 0.72);
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                background:
+                    radial-gradient(circle at 16% 14%, rgba(255, 92, 255, 0.18), transparent 22%),
+                    radial-gradient(circle at 84% 10%, rgba(92, 255, 243, 0.2), transparent 22%),
+                    linear-gradient(180deg, rgba(132, 255, 139, 0.04), transparent 40%),
+                    #070813;
+                color: var(--text-main);
+                font-family: "Segoe UI", "Fira Code", monospace;
+            }
+
+            body {
+                display: grid;
+                grid-template-rows: auto auto 1fr auto;
+                gap: 1.2rem;
+                padding: 1.2rem;
+            }
+
+            .chrome {
+                border: 1px solid var(--line);
+                background: linear-gradient(180deg, rgba(92, 255, 243, 0.08), rgba(255, 92, 255, 0.03));
+                box-shadow:
+                    0 0 1.4rem rgba(92, 255, 243, 0.16),
+                    0 0 2.6rem rgba(255, 92, 255, 0.08),
+                    inset 0 0 1.2rem rgba(92, 255, 243, 0.05);
+            }
+
+            header.chrome {
+                padding: 1rem 1.2rem;
+            }
+
+            .eyebrow {
+                font-size: 0.74rem;
+                letter-spacing: 0.24rem;
+                text-transform: uppercase;
+                color: var(--text-dim);
+                margin-bottom: 0.5rem;
+            }
+
+            h1 {
+                margin: 0;
+                font-size: 2rem;
+                letter-spacing: 0.12rem;
+                text-shadow:
+                    0 0 0.8rem rgba(92, 255, 243, 0.28),
+                    0 0 1.4rem rgba(255, 92, 255, 0.18);
+            }
+
+            .subline {
+                margin-top: 0.55rem;
+                color: var(--text-dim);
+                font-size: 0.95rem;
+            }
+
+            .stats {
+                display: grid;
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+                gap: 0.85rem;
+            }
+
+            .card {
+                padding: 0.95rem 1rem;
+                border: 1px solid var(--line);
+                background: linear-gradient(180deg, rgba(92, 255, 243, 0.07), rgba(255, 92, 255, 0.03));
+                box-shadow:
+                    0 0 1rem rgba(92, 255, 243, 0.12),
+                    inset 0 0 0.8rem rgba(92, 255, 243, 0.05);
+            }
+
+            .card span {
+                display: block;
+                color: var(--text-dim);
+                font-size: 0.72rem;
+                letter-spacing: 0.16rem;
+                text-transform: uppercase;
+                margin-bottom: 0.45rem;
+            }
+
+            .card strong {
+                display: block;
+                font-size: 1rem;
+                line-height: 1.35;
+                word-break: break-word;
+                text-shadow: 0 0 0.6rem rgba(92, 255, 243, 0.18);
+            }
+
+            .map-shell {
+                padding: 0.8rem;
+                min-height: 0;
+            }
+
+            iframe {
+                width: 100%;
+                height: 100%;
+                border: 1px solid var(--line);
+                background: #000;
+                box-shadow:
+                    0 0 1.2rem rgba(92, 255, 243, 0.14),
+                    inset 0 0 0.8rem rgba(92, 255, 243, 0.06);
+            }
+
+            .actions {
+                display: flex;
+                gap: 0.8rem;
+                justify-content: flex-end;
+                padding: 0.9rem 1rem;
+            }
+
+            button {
+                appearance: none;
+                border: 1px solid var(--line);
+                background: linear-gradient(180deg, rgba(92, 255, 243, 0.16), rgba(255, 92, 255, 0.06));
+                color: var(--text-main);
+                padding: 0.72rem 1rem;
+                cursor: pointer;
+                letter-spacing: 0.1rem;
+                text-transform: uppercase;
+                font-weight: 700;
+                box-shadow:
+                    0 0 1rem rgba(92, 255, 243, 0.14),
+                    inset 0 0 0.8rem rgba(92, 255, 243, 0.06);
+            }
+
+            button:hover {
+                box-shadow:
+                    0 0 1.4rem rgba(92, 255, 243, 0.24),
+                    0 0 2.2rem rgba(255, 92, 255, 0.1),
+                    inset 0 0 0.9rem rgba(92, 255, 243, 0.1);
+            }
+
+            @media (max-width: 960px) {
+                body {
+                    grid-template-rows: auto auto auto 1fr auto;
+                }
+
+                .stats {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header class="chrome">
+            <div class="eyebrow">Fenetre Geo Skynet</div>
+            <h1 id="headline">Vue de localisation IP</h1>
+            <div class="subline" id="subline">Geolocalisation approximative derivee des donnees GeoIP.</div>
+        </header>
+
+        <section class="stats">
+            <div class="card">
+                <span>IP</span>
+                <strong id="ipField">-</strong>
+            </div>
+            <div class="card">
+                <span>Ville</span>
+                <strong id="cityField">-</strong>
+            </div>
+            <div class="card">
+                <span>Region</span>
+                <strong id="regionField">-</strong>
+            </div>
+            <div class="card">
+                <span>Pays</span>
+                <strong id="countryField">-</strong>
+            </div>
+            <div class="card">
+                <span>Coordonnees</span>
+                <strong id="coordsField">-</strong>
+            </div>
+        </section>
+
+        <section class="map-shell chrome">
+            <iframe id="mapFrame" title="Vue de localisation OpenStreetMap" loading="lazy"></iframe>
+        </section>
+
+        <footer class="actions chrome">
+            <button id="copyCoordsBtn">Copier coord.</button>
+            <button id="browserBtn">Ouvrir dans le navigateur</button>
+        </footer>
+
+        <script>
+            const { shell, clipboard } = require("electron");
+
+            const params = new URLSearchParams(window.location.search);
+            const ip = params.get("ip") || "-";
+            const lat = Number(params.get("lat"));
+            const lon = Number(params.get("lon"));
+            const city = params.get("city") || "Inconnu";
+            const region = params.get("region") || "Inconnu";
+            const country = params.get("country") || "Inconnu";
+            const source = params.get("source") || "network";
+
+            const mapLink = `https://www.openstreetmap.org/?mlat=${encodeURIComponent(lat)}&mlon=${encodeURIComponent(lon)}#map=9/${encodeURIComponent(lat)}/${encodeURIComponent(lon)}`;
+
+            function getBounds(latitude, longitude, delta) {
+                return {
+                    left: longitude - delta,
+                    bottom: latitude - delta,
+                    right: longitude + delta,
+                    top: latitude + delta
+                };
+            }
+
+            const bounds = getBounds(lat, lon, 1.4);
+            const embedUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bounds.left)},${encodeURIComponent(bounds.bottom)},${encodeURIComponent(bounds.right)},${encodeURIComponent(bounds.top)}&layer=mapnik&marker=${encodeURIComponent(lat)},${encodeURIComponent(lon)}`;
+
+            document.getElementById("headline").textContent = `${ip} :: CARTE GEO`;
+            document.getElementById("subline").textContent = `Source : ${source} · Position approximative issue des donnees GeoIP.`;
+            document.getElementById("ipField").textContent = ip;
+            document.getElementById("cityField").textContent = city;
+            document.getElementById("regionField").textContent = region;
+            document.getElementById("countryField").textContent = country;
+            document.getElementById("coordsField").textContent = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+            document.getElementById("mapFrame").src = embedUrl;
+
+            document.getElementById("browserBtn").addEventListener("click", () => {
+                shell.openExternal(mapLink);
+            });
+
+            document.getElementById("copyCoordsBtn").addEventListener("click", () => {
+                clipboard.writeText(`${lat.toFixed(6)}, ${lon.toFixed(6)}`);
+            });
+        </script>
+    </body>
+</html>

@@ -8,8 +8,8 @@ class FuzzyFinder {
         
         this.disp = new Modal({
             type: "custom",
-            title: "Fuzzy cwd file search",
-            html: `<input type="search" id="fuzzyFinder" placeholder="Search file in cwd..." />
+            title: "Recherche floue dans le dossier courant",
+            html: `<input type="search" id="fuzzyFinder" placeholder="Rechercher un fichier dans le dossier courant..." />
                 <ul id="fuzzyFinder-results">
                     <li class="fuzzyFinderMatchSelected"></li>
                     <li></li>
@@ -18,7 +18,7 @@ class FuzzyFinder {
                     <li></li>
                 </ul>`,
             buttons: [
-                {label: "Select", action: "window.activeFuzzyFinder.submit()"}
+                {label: "Selectionner", action: "window.activeFuzzyFinder.submit()"}
             ]
         }, () => {
             delete window.activeFuzzyFinder;
@@ -99,7 +99,7 @@ class FuzzyFinder {
            });
               
         if (results.length === 0) {
-             this.results.innerHTML = `<li class="fuzzyFinderMatchSelected">No results</li>
+             this.results.innerHTML = `<li class="fuzzyFinderMatchSelected">Aucun resultat</li>
                  <li></li>
                   <li></li>
                   <li></li>
@@ -118,7 +118,7 @@ class FuzzyFinder {
       }
       submit() {
          let file = document.querySelector("li.fuzzyFinderMatchSelected").innerText;
-         if (file === "No results" || file.length <= 0) {
+         if (file === "Aucun resultat" || file === "No results" || file.length <= 0) {
              this.disp.close();
              return;
         }

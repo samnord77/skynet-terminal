@@ -6,11 +6,11 @@ class Conninfo {
         this.parent = document.getElementById(parentId);
         this.parent.innerHTML += `<div id="mod_conninfo">
             <div id="mod_conninfo_innercontainer">
-                <h1>NETWORK TRAFFIC<i>UP / DOWN, MB/S</i></h1>
-                <h2>TOTAL<i>0B OUT, 0B IN</i></h2>
+                <h1>TRAFIC RESEAU<i>ENVOI / RECEPTION, MB/S</i></h1>
+                <h2>TOTAL<i>0B SORTIE, 0B ENTREE</i></h2>
                 <canvas id="mod_conninfo_canvas_top"></canvas>
                 <canvas id="mod_conninfo_canvas_bottom"></canvas>
-                <h3>OFFLINE</h3>
+                <h3>HORS LIGNE</h3>
             </div>
         </div>`;
 
@@ -84,8 +84,8 @@ class Conninfo {
                 this.series[0].append(time, data[0].tx_sec/125000);
                 this.series[1].append(time, -data[0].rx_sec/125000);
 
-                this.total.innerText = `${this._pb(data[0].tx_bytes)} OUT, ${this._pb(data[0].rx_bytes)} IN`.toUpperCase();
-                this.current.innerText = "UP " + parseFloat(data[0].tx_sec/125000).toFixed(2) + " DOWN " + parseFloat(data[0].rx_sec/125000).toFixed(2);
+                this.total.innerText = `${this._pb(data[0].tx_bytes)} SORTIE, ${this._pb(data[0].rx_bytes)} ENTREE`.toUpperCase();
+                this.current.innerText = "ENVOI " + parseFloat(data[0].tx_sec/125000).toFixed(2) + " RECEPTION " + parseFloat(data[0].rx_sec/125000).toFixed(2);
             });
         }
     }

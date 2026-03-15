@@ -1,0 +1,45 @@
+{
+    "colors": {
+        "r": 90,
+        "g": 255,
+        "b": 233,
+        "black": "#05020d",
+        "light_black": "#0d0820",
+        "grey": "#16122f",
+        "red": "#ff4d9f",
+        "green": "#84ff8b",
+        "yellow": "#fff36a",
+        "blue": "#6ea8ff",
+        "magenta": "#ff5cff",
+        "cyan": "#5cfff3",
+        "white": "#eaffff",
+        "brightBlack": "#5948a0",
+        "brightRed": "#ff7ab7",
+        "brightGreen": "#abff95",
+        "brightYellow": "#fff98f",
+        "brightBlue": "#93c3ff",
+        "brightMagenta": "#ff96ff",
+        "brightCyan": "#91fff8",
+        "brightWhite": "#ffffff"
+    },
+    "cssvars": {
+        "font_main": "United Sans Medium",
+        "font_main_light": "United Sans Light"
+    },
+    "terminal": {
+        "fontFamily": "Fira Code",
+        "cursorStyle": "bar",
+        "foreground": "#d8ffff",
+        "background": "#0d0820",
+        "cursor": "#5cfff3",
+        "cursorAccent": "#ff5cff",
+        "selection": "rgba(255,92,255,0.28)"
+    },
+    "globe": {
+        "base": "#140e28",
+        "marker": "#ff5cff",
+        "pin": "#84ff8b",
+        "satellite": "#5cfff3"
+    },
+    "injectCSS": "body::before{background:radial-gradient(circle at 14% 20%,rgba(255,92,255,0.24),transparent 24%),radial-gradient(circle at 84% 16%,rgba(92,255,243,0.24),transparent 22%),radial-gradient(circle at 52% 88%,rgba(132,255,139,0.16),transparent 28%)}section#main_shell,section.mod_column,section#filesystem{box-shadow:0 0 2.6vh rgba(92,255,243,0.18),0 0 5vh rgba(255,92,255,0.12),inset 0 0 1.4vh rgba(132,255,139,0.07)}div#main_shell_actions>button,div#main_shell_statusline>span,#skynetOpsCenter .skynet_card,#skynetWorkspace .workspace_card,#skynetWorkspace .workspace_panel{box-shadow:0 0 2vh rgba(92,255,243,0.22),0 0 2.6vh rgba(255,92,255,0.1),inset 0 0 1vh rgba(132,255,139,0.09)}div.keyboard_key{box-shadow:0 0 1.2vh rgba(92,255,243,0.14),0 0 1.8vh rgba(255,92,255,0.08),inset 0 0 1vh rgba(132,255,139,0.06)}ul#main_shell_tabs>li.active{background:linear-gradient(135deg,#5cfff3 0%,#ff5cff 100%);color:#0d0820}.xterm .xterm-screen canvas{filter:drop-shadow(0 0 0.85vh rgba(92,255,243,0.28))}"
+}

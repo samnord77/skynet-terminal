@@ -205,7 +205,7 @@ class Terminal {
                 // See #397
                 if (!window.settings.experimentalGlobeFeatures) return;
                 let ips = e.data.match(/((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/g);
-                if (ips !== null && ips.length >= 1) {
+                if (ips !== null && ips.length >= 1 && window.mods && window.mods.globe) {
                     ips = ips.filter((val, index, self) => { return self.indexOf(val) === index; });
                     ips.forEach(ip => {
                         window.mods.globe.addTemporaryConnectedMarker(ip);
@@ -406,6 +406,29 @@ class Terminal {
                 }
             }, 1000);
 
+            let websocketError = null;
+            try {
+                this.wss = new this.Websocket({
+                    port: this.port,
+                    clientTracking: true,
+                    verifyClient: () => {
+                        if (this.wss.clients.length >= 1) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                });
+            } catch (error) {
+                websocketError = error;
+            }
+
+            if (websocketError) {
+                clearInterval(this._tick);
+                this._closed = true;
+                throw websocketError;
+            }
+
             this.tty = this.Pty.spawn(opts.shell || "bash", (opts.params.length > 0 ? opts.params : (process.platform === "win32" ? [] : ["--login"])), {
                 name: opts.env.TERM || "xterm-256color",
                 cols: 80,
@@ -417,18 +440,6 @@ class Terminal {
             this.tty.onExit((code, signal) => {
                 this._closed = true;
                 this.onclosed(code, signal);
-            });
-
-            this.wss = new this.Websocket({
-                port: this.port,
-                clientTracking: true,
-                verifyClient: info => {
-                    if (this.wss.clients.length >= 1) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
             });
             this.Ipc.on("terminal_channel-"+this.port, (e, ...args) => {
                 switch(args[0]) {
